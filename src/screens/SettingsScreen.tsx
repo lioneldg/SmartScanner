@@ -54,7 +54,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
     try {
       await setLanguage(language);
       setShowLanguageModal(false);
-      Alert.alert(t('settings.languageChanged'), '', [{ text: 'OK' }]);
     } catch (error) {
       Alert.alert('Error', 'Failed to change language. Please try again.', [
         { text: 'OK' },
@@ -66,7 +65,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
     try {
       await setThemeMode(mode);
       setShowThemeModal(false);
-      Alert.alert(t('settings.themeChanged'), '', [{ text: 'OK' }]);
     } catch (error) {
       Alert.alert('Error', 'Failed to change theme. Please try again.', [
         { text: 'OK' },
