@@ -2,12 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../contexts/ThemeContext';
 import { RootStackParamList } from '../navigation/types';
 
 type ProfileScreenProps = NativeStackScreenProps<RootStackParamList, 'Profile'>;
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+
+  // Create dynamic styles based on theme
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -31,40 +36,42 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-  },
-  info: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: '#34C759',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginVertical: 10,
-    minWidth: 200,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-});
+// Create dynamic styles based on theme
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: theme.spacing.lg,
+      backgroundColor: theme.colors.background,
+    },
+    title: {
+      fontSize: theme.typography.sizes.xxl,
+      fontWeight: theme.typography.weights.bold,
+      marginBottom: theme.spacing.lg,
+      color: theme.colors.text,
+    },
+    info: {
+      fontSize: theme.typography.sizes.md,
+      color: theme.colors.textSecondary,
+      marginBottom: theme.spacing.xxl,
+      textAlign: 'center',
+    },
+    button: {
+      backgroundColor: theme.colors.success,
+      paddingHorizontal: theme.spacing.xl,
+      paddingVertical: theme.spacing.md,
+      borderRadius: theme.borderRadius.md,
+      marginVertical: theme.spacing.sm,
+      minWidth: 200,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: theme.typography.sizes.md,
+      fontWeight: theme.typography.weights.semibold,
+      textAlign: 'center',
+    },
+  });
 
 export default ProfileScreen;

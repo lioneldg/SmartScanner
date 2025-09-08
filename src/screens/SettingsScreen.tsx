@@ -12,6 +12,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../navigation/types';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { ThemeMode } from '../types/theme';
 import {
   LANGUAGES,
   LanguageType,
@@ -26,7 +28,14 @@ type SettingsScreenProps = NativeStackScreenProps<
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { currentLanguage, setLanguage, isLoading } = useLanguage();
+  const {
+    theme,
+    themeMode,
+    setThemeMode,
+    isLoading: themeLoading,
+  } = useTheme();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
 
   // Get available language options based on system language
   const availableOptions = getAvailableLanguageOptions();
@@ -35,6 +44,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     label: t(option.labelKey),
   }));
 
+  // Theme options
+  const themeOptions = [
+    { key: 'light' as ThemeMode, label: t('common.light') },
+    { key: 'dark' as ThemeMode, label: t('common.dark') },
+  ];
+
   const handleLanguageChange = async (language: LanguageType) => {
     try {
       await setLanguage(language);
@@ -42,6 +57,18 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       Alert.alert(t('settings.languageChanged'), '', [{ text: 'OK' }]);
     } catch (error) {
       Alert.alert('Error', 'Failed to change language. Please try again.', [
+        { text: 'OK' },
+      ]);
+    }
+  };
+
+  const handleThemeChange = async (mode: ThemeMode) => {
+    try {
+      await setThemeMode(mode);
+      setShowThemeModal(false);
+      Alert.alert(t('settings.themeChanged'), '', [{ text: 'OK' }]);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to change theme. Please try again.', [
         { text: 'OK' },
       ]);
     }
@@ -66,6 +93,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     }
   };
 
+  const getCurrentThemeLabel = () => {
+    const option = themeOptions.find(opt => opt.key === themeMode);
+    return option ? option.label : t('common.light');
+  };
+
   const renderLanguageOption = ({
     item,
   }: {
@@ -73,15 +105,15 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   }) => (
     <TouchableOpacity
       style={[
-        styles.languageOption,
-        item.key === currentLanguage && styles.selectedLanguageOption,
+        styles.option,
+        item.key === currentLanguage && styles.selectedOption,
       ]}
       onPress={() => handleLanguageChange(item.key)}
     >
       <Text
         style={[
-          styles.languageOptionText,
-          item.key === currentLanguage && styles.selectedLanguageOptionText,
+          styles.optionText,
+          item.key === currentLanguage && styles.selectedOptionText,
         ]}
       >
         {item.label}
@@ -89,6 +121,30 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       {item.key === currentLanguage && <Text style={styles.checkmark}>✓</Text>}
     </TouchableOpacity>
   );
+
+  const renderThemeOption = ({
+    item,
+  }: {
+    item: { key: ThemeMode; label: string };
+  }) => (
+    <TouchableOpacity
+      style={[styles.option, item.key === themeMode && styles.selectedOption]}
+      onPress={() => handleThemeChange(item.key)}
+    >
+      <Text
+        style={[
+          styles.optionText,
+          item.key === themeMode && styles.selectedOptionText,
+        ]}
+      >
+        {item.label}
+      </Text>
+      {item.key === themeMode && <Text style={styles.checkmark}>✓</Text>}
+    </TouchableOpacity>
+  );
+
+  // Create dynamic styles based on theme
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -99,13 +155,24 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       <View style={styles.settingSection}>
         <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
         <TouchableOpacity
-          style={styles.languageSelector}
+          style={styles.selector}
           onPress={() => setShowLanguageModal(true)}
           disabled={isLoading}
         >
-          <Text style={styles.languageSelectorText}>
-            {getCurrentLanguageLabel()}
-          </Text>
+          <Text style={styles.selectorText}>{getCurrentLanguageLabel()}</Text>
+          <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Theme Selection */}
+      <View style={styles.settingSection}>
+        <Text style={styles.sectionTitle}>{t('settings.theme')}</Text>
+        <TouchableOpacity
+          style={styles.selector}
+          onPress={() => setShowThemeModal(true)}
+          disabled={themeLoading}
+        >
+          <Text style={styles.selectorText}>{getCurrentThemeLabel()}</Text>
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
       </View>
@@ -148,7 +215,35 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
               data={languageOptions}
               renderItem={renderLanguageOption}
               keyExtractor={item => item.key}
-              style={styles.languageList}
+              style={styles.optionsList}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Theme Selection Modal */}
+      <Modal
+        visible={showThemeModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowThemeModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('settings.selectTheme')}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowThemeModal(false)}
+              >
+                <Text style={styles.closeButtonText}>×</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={themeOptions}
+              renderItem={renderThemeOption}
+              keyExtractor={item => item.key}
+              style={styles.optionsList}
             />
           </View>
         </View>
@@ -157,134 +252,136 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-  },
-  info: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  settingSection: {
-    width: '100%',
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 10,
-  },
-  languageSelector: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-    padding: 15,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-  },
-  languageSelectorText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  arrow: {
-    fontSize: 20,
-    color: '#666',
-    fontWeight: 'bold',
-  },
-  button: {
-    backgroundColor: '#FF9500',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginVertical: 10,
-    minWidth: 200,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 0,
-    width: '80%',
-    maxHeight: '60%',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  closeButton: {
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 24,
-    color: '#666',
-    fontWeight: 'bold',
-  },
-  languageList: {
-    maxHeight: 200,
-  },
-  languageOption: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f8f9fa',
-  },
-  selectedLanguageOption: {
-    backgroundColor: '#e3f2fd',
-  },
-  languageOptionText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  selectedLanguageOptionText: {
-    color: '#1976d2',
-    fontWeight: '600',
-  },
-  checkmark: {
-    fontSize: 18,
-    color: '#1976d2',
-    fontWeight: 'bold',
-  },
-});
+// Create dynamic styles based on theme
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: theme.spacing.lg,
+      backgroundColor: theme.colors.background,
+    },
+    title: {
+      fontSize: theme.typography.sizes.xxl,
+      fontWeight: theme.typography.weights.bold,
+      marginBottom: theme.spacing.lg,
+      color: theme.colors.text,
+    },
+    info: {
+      fontSize: theme.typography.sizes.md,
+      color: theme.colors.textSecondary,
+      marginBottom: theme.spacing.xxl,
+      textAlign: 'center',
+    },
+    settingSection: {
+      width: '100%',
+      marginBottom: theme.spacing.xl,
+    },
+    sectionTitle: {
+      fontSize: theme.typography.sizes.lg,
+      fontWeight: theme.typography.weights.semibold,
+      color: theme.colors.text,
+      marginBottom: theme.spacing.sm,
+    },
+    selector: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: theme.colors.surface,
+      padding: theme.spacing.md,
+      borderRadius: theme.borderRadius.md,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    selectorText: {
+      fontSize: theme.typography.sizes.md,
+      color: theme.colors.text,
+    },
+    arrow: {
+      fontSize: theme.typography.sizes.lg,
+      color: theme.colors.textSecondary,
+      fontWeight: theme.typography.weights.bold,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      paddingHorizontal: theme.spacing.xl,
+      paddingVertical: theme.spacing.md,
+      borderRadius: theme.borderRadius.md,
+      marginVertical: theme.spacing.sm,
+      minWidth: 200,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: theme.typography.sizes.md,
+      fontWeight: theme.typography.weights.semibold,
+      textAlign: 'center',
+    },
+    // Modal styles
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: theme.colors.modalOverlay,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: theme.colors.modalBackground,
+      borderRadius: theme.borderRadius.lg,
+      padding: 0,
+      width: '80%',
+      maxHeight: '60%',
+    },
+    modalHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    modalTitle: {
+      fontSize: theme.typography.sizes.lg,
+      fontWeight: theme.typography.weights.bold,
+      color: theme.colors.text,
+    },
+    closeButton: {
+      width: 30,
+      height: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    closeButtonText: {
+      fontSize: 24,
+      color: theme.colors.textSecondary,
+      fontWeight: theme.typography.weights.bold,
+    },
+    optionsList: {
+      maxHeight: 200,
+    },
+    option: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.divider,
+    },
+    selectedOption: {
+      backgroundColor: theme.colors.surface,
+    },
+    optionText: {
+      fontSize: theme.typography.sizes.md,
+      color: theme.colors.text,
+    },
+    selectedOptionText: {
+      color: theme.colors.primary,
+      fontWeight: theme.typography.weights.semibold,
+    },
+    checkmark: {
+      fontSize: theme.typography.sizes.lg,
+      color: theme.colors.primary,
+      fontWeight: theme.typography.weights.bold,
+    },
+  });
 
 export default SettingsScreen;

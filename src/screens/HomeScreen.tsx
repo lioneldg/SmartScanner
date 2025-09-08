@@ -2,12 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../contexts/ThemeContext';
 import { RootStackParamList } from '../navigation/types';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
+
+  // Create dynamic styles based on theme
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -42,66 +47,68 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  description: {
-    fontSize: 14,
-    color: '#888',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  scanButton: {
-    backgroundColor: '#FF9500',
-    paddingHorizontal: 40,
-    paddingVertical: 20,
-    borderRadius: 12,
-    marginBottom: 30,
-    minWidth: 250,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  scanButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginVertical: 10,
-    minWidth: 200,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-});
+// Create dynamic styles based on theme
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: theme.spacing.lg,
+      backgroundColor: theme.colors.background,
+    },
+    title: {
+      fontSize: theme.typography.sizes.xxl,
+      fontWeight: theme.typography.weights.bold,
+      marginBottom: theme.spacing.sm,
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+    subtitle: {
+      fontSize: theme.typography.sizes.lg,
+      color: theme.colors.textSecondary,
+      marginBottom: theme.spacing.sm,
+      textAlign: 'center',
+    },
+    description: {
+      fontSize: theme.typography.sizes.sm,
+      color: theme.colors.textTertiary,
+      marginBottom: theme.spacing.xxl,
+      textAlign: 'center',
+    },
+    scanButton: {
+      backgroundColor: theme.colors.primary,
+      paddingHorizontal: theme.spacing.xxl,
+      paddingVertical: theme.spacing.lg,
+      borderRadius: theme.borderRadius.lg,
+      marginBottom: theme.spacing.xl,
+      minWidth: 250,
+      elevation: 3,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
+    scanButtonText: {
+      color: 'white',
+      fontSize: theme.typography.sizes.lg,
+      fontWeight: theme.typography.weights.bold,
+      textAlign: 'center',
+    },
+    button: {
+      backgroundColor: theme.colors.info,
+      paddingHorizontal: theme.spacing.xl,
+      paddingVertical: theme.spacing.md,
+      borderRadius: theme.borderRadius.md,
+      marginVertical: theme.spacing.sm,
+      minWidth: 200,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: theme.typography.sizes.md,
+      fontWeight: theme.typography.weights.semibold,
+      textAlign: 'center',
+    },
+  });
 
 export default HomeScreen;

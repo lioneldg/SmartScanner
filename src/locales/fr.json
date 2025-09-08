@@ -4,7 +4,9 @@
     "goToHome": "Aller à l'accueil",
     "system": "Système",
     "english": "Anglais",
-    "french": "Français"
+    "french": "Français",
+    "light": "Clair",
+    "dark": "Sombre"
   },
   "navigation": {
     "home": "Accueil",
@@ -26,6 +28,9 @@
     "info": "Les paramètres de l'application seraient ici",
     "language": "Langue",
     "selectLanguage": "Sélectionner la langue",
-    "languageChanged": "Langue changée avec succès"
+    "languageChanged": "Langue changée avec succès",
+    "theme": "Thème",
+    "selectTheme": "Sélectionner le thème",
+    "themeChanged": "Thème changé avec succès"
   }
 }

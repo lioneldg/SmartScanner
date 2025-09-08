@@ -4,7 +4,9 @@
     "goToHome": "Go to Home",
     "system": "System",
     "english": "English",
-    "french": "French"
+    "french": "French",
+    "light": "Light",
+    "dark": "Dark"
   },
   "navigation": {
     "home": "Home",
@@ -26,6 +28,9 @@
     "info": "App settings would go here",
     "language": "Language",
     "selectLanguage": "Select Language",
-    "languageChanged": "Language changed successfully"
+    "languageChanged": "Language changed successfully",
+    "theme": "Theme",
+    "selectTheme": "Select Theme",
+    "themeChanged": "Theme changed successfully"
   }
 }
