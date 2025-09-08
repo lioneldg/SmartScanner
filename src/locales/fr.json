@@ -1,7 +1,6 @@
 {
   "common": {
     "goBack": "Retour",
-    "goToHome": "Aller à l'accueil",
     "system": "Système",
     "english": "Anglais",
     "french": "Français",
@@ -9,8 +8,6 @@
     "dark": "Sombre"
   },
   "navigation": {
-    "home": "Accueil",
-    "profile": "Profil",
     "settings": "Paramètres"
   },
   "home": {
@@ -19,13 +16,8 @@
     "description": "Votre solution de numérisation intelligente",
     "startScanning": "Commencer la numérisation"
   },
-  "profile": {
-    "title": "Écran de profil",
-    "info": "Les informations du profil utilisateur seraient ici"
-  },
   "settings": {
     "title": "Paramètres",
-    "info": "Les paramètres de l'application seraient ici",
     "language": "Langue",
     "selectLanguage": "Sélectionner la langue",
     "languageChanged": "Langue changée avec succès",

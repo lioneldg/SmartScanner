@@ -7,7 +7,7 @@ import { RootStackParamList } from '../navigation/types';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FC<HomeScreenProps> = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
 
@@ -28,20 +28,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         }}
       >
         <Text style={styles.scanButtonText}>{t('home.startScanning')}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Profile')}
-      >
-        <Text style={styles.buttonText}>{t('navigation.profile')}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Settings')}
-      >
-        <Text style={styles.buttonText}>{t('navigation.settings')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -84,29 +70,15 @@ const createStyles = (theme: any) =>
       marginBottom: theme.spacing.xl,
       minWidth: 250,
       elevation: 3,
-      shadowColor: '#000',
+      shadowColor: theme.colors.text,
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
     },
     scanButtonText: {
-      color: 'white',
+      color: theme.colors.background,
       fontSize: theme.typography.sizes.lg,
       fontWeight: theme.typography.weights.bold,
-      textAlign: 'center',
-    },
-    button: {
-      backgroundColor: theme.colors.info,
-      paddingHorizontal: theme.spacing.xl,
-      paddingVertical: theme.spacing.md,
-      borderRadius: theme.borderRadius.md,
-      marginVertical: theme.spacing.sm,
-      minWidth: 200,
-    },
-    buttonText: {
-      color: 'white',
-      fontSize: theme.typography.sizes.md,
-      fontWeight: theme.typography.weights.semibold,
       textAlign: 'center',
     },
   });

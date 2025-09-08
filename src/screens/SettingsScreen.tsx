@@ -25,7 +25,7 @@ type SettingsScreenProps = NativeStackScreenProps<
   'Settings'
 >;
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
+const SettingsScreen: React.FC<SettingsScreenProps> = () => {
   const { t } = useTranslation();
   const { currentLanguage, setLanguage, isLoading } = useLanguage();
   const {
@@ -149,7 +149,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{t('settings.title')}</Text>
-      <Text style={styles.info}>{t('settings.info')}</Text>
 
       {/* Language Selection */}
       <View style={styles.settingSection}>
@@ -176,20 +175,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
       </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.buttonText}>{t('common.goBack')}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Home')}
-      >
-        <Text style={styles.buttonText}>{t('common.goToHome')}</Text>
-      </TouchableOpacity>
 
       {/* Language Selection Modal */}
       <Modal
@@ -312,7 +297,7 @@ const createStyles = (theme: any) =>
       minWidth: 200,
     },
     buttonText: {
-      color: 'white',
+      color: theme.colors.background,
       fontSize: theme.typography.sizes.md,
       fontWeight: theme.typography.weights.semibold,
       textAlign: 'center',
