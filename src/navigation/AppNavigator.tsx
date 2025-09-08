@@ -37,6 +37,7 @@ const AppNavigator: React.FC = () => {
         headerTitleStyle: {
           fontWeight: theme.typography.weights.bold,
         },
+        headerTitleAlign: 'center',
         headerBackTitle: t('common.goBack'),
       }}
     >
@@ -61,7 +62,6 @@ const AppNavigator: React.FC = () => {
 
 const styles = StyleSheet.create({
   settingsButton: {
-    marginRight: 15,
     padding: 8,
   },
 });
