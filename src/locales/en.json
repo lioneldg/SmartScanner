@@ -1,0 +1,31 @@
+{
+  "common": {
+    "goBack": "Go Back",
+    "goToHome": "Go to Home",
+    "system": "System",
+    "english": "English",
+    "french": "French"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile", 
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Smart Scanner",
+    "welcome": "Welcome to Smart Scanner",
+    "description": "Your intelligent scanning solution",
+    "startScanning": "Start Scanning"
+  },
+  "profile": {
+    "title": "Profile Screen",
+    "info": "User profile information would go here"
+  },
+  "settings": {
+    "title": "Settings",
+    "info": "App settings would go here",
+    "language": "Language",
+    "selectLanguage": "Select Language",
+    "languageChanged": "Language changed successfully"
+  }
+}
