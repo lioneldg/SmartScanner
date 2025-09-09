@@ -1,6 +1,5 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RNLocalize from 'react-native-localize';
 
 // Import translation files
@@ -52,21 +51,8 @@ const determineLanguage = (selectedLanguage: LanguageType): string => {
   }
 };
 
-// Storage keys
-const STORAGE_KEY = 'selected_language';
-
-// Get stored language preference
-const getStoredLanguage = async (): Promise<LanguageType> => {
-  try {
-    const stored = await AsyncStorage.getItem(STORAGE_KEY);
-    if (stored && Object.values(LANGUAGES).includes(stored as LanguageType)) {
-      return stored as LanguageType;
-    }
-  } catch (error) {
-    console.warn('Error getting stored language:', error);
-  }
-  return LANGUAGES.SYSTEM; // default to system
-};
+// Note: Language storage is now handled by the app store (Zustand)
+// This is kept for backward compatibility but not actively used
 
 // Check if a language is available in current options
 export const isLanguageAvailable = (language: LanguageType): boolean => {
@@ -86,25 +72,15 @@ export const getFallbackLanguage = (
   return availableOptions[0]?.key || LANGUAGES.SYSTEM;
 };
 
-// Store language preference
-export const storeLanguagePreference = async (
-  language: LanguageType,
-): Promise<void> => {
-  try {
-    await AsyncStorage.setItem(STORAGE_KEY, language);
-  } catch (error) {
-    console.warn('Error storing language preference:', error);
-  }
-};
-
-// Initialize i18n
+// Initialize i18n with default settings
 const initI18n = async (): Promise<void> => {
-  const selectedLanguage = await getStoredLanguage();
-  const actualLanguage = determineLanguage(selectedLanguage);
+  // Start with system language detection
+  const systemLanguage = getDeviceLocale();
+  const initialLanguage = systemLanguage === 'fr' ? 'fr' : 'en';
 
   await i18n.use(initReactI18next).init({
     resources,
-    lng: actualLanguage,
+    lng: initialLanguage,
     fallbackLng: 'en',
     debug: __DEV__,
     interpolation: {
@@ -116,16 +92,10 @@ const initI18n = async (): Promise<void> => {
   });
 };
 
-// Change language
+// Change language (used by the app store)
 export const changeLanguage = async (language: LanguageType): Promise<void> => {
-  await storeLanguagePreference(language);
   const actualLanguage = determineLanguage(language);
   await i18n.changeLanguage(actualLanguage);
-};
-
-// Get current selected language preference (not the actual i18n language)
-export const getCurrentLanguagePreference = async (): Promise<LanguageType> => {
-  return await getStoredLanguage();
 };
 
 // Get available language options based on system language

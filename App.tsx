@@ -3,13 +3,13 @@ import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigation/AppNavigator';
-import { LanguageProvider } from './src/contexts/LanguageContext';
-import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
+import { AppInitializer } from './src/components';
+import { useAppStore } from './src/store';
 import './src/locales/i18n'; // Initialize i18n
 
-// Inner component that has access to theme context
+// Inner component that has access to theme store
 const AppContent: React.FC = () => {
-  const { isDark, theme } = useTheme();
+  const { isDark, theme } = useAppStore();
 
   return (
     <NavigationContainer>
@@ -25,11 +25,9 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AppContent />
-        </LanguageProvider>
-      </ThemeProvider>
+      <AppInitializer>
+        <AppContent />
+      </AppInitializer>
     </SafeAreaProvider>
   );
 }

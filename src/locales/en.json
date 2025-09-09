@@ -20,9 +20,7 @@
     "title": "Settings",
     "language": "Language",
     "selectLanguage": "Select Language",
-    "languageChanged": "Language changed successfully",
     "theme": "Theme",
     "selectTheme": "Select Theme",
-    "themeChanged": "Theme changed successfully"
   }
 }

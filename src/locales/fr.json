@@ -20,9 +20,7 @@
     "title": "Paramètres",
     "language": "Langue",
     "selectLanguage": "Sélectionner la langue",
-    "languageChanged": "Langue changée avec succès",
     "theme": "Thème",
     "selectTheme": "Sélectionner le thème",
-    "themeChanged": "Thème changé avec succès"
   }
 }

@@ -3,7 +3,7 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from './types';
-import { useTheme } from '../contexts/ThemeContext';
+import { useAppStore } from '../store';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC = () => {
   const { t } = useTranslation();
-  const { theme } = useTheme();
+  const { theme } = useAppStore();
 
   const renderSettingsButton = useCallback(
     (navigation: any) => (

@@ -4,15 +4,13 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   Modal,
   FlatList,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from '../navigation/types';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { useAppStore } from '../store';
 import { ThemeMode } from '../types/theme';
 import {
   LANGUAGES,
@@ -27,13 +25,17 @@ type SettingsScreenProps = NativeStackScreenProps<
 
 const SettingsScreen: React.FC<SettingsScreenProps> = () => {
   const { t } = useTranslation();
-  const { currentLanguage, setLanguage, isLoading } = useLanguage();
   const {
-    theme,
+    currentLanguage,
+    setLanguage,
+    isLanguageLoading,
     themeMode,
     setThemeMode,
-    isLoading: themeLoading,
-  } = useTheme();
+    isThemeLoading,
+    setLanguageLoading,
+    setThemeLoading,
+    theme,
+  } = useAppStore();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [showThemeModal, setShowThemeModal] = useState(false);
 
@@ -51,25 +53,22 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
   ];
 
   const handleLanguageChange = async (language: LanguageType) => {
+    setLanguageLoading(true);
     try {
       await setLanguage(language);
       setShowLanguageModal(false);
     } catch (error) {
-      Alert.alert('Error', 'Failed to change language. Please try again.', [
-        { text: 'OK' },
-      ]);
+      console.error('Error changing language:', error);
+    } finally {
+      setLanguageLoading(false);
     }
   };
 
-  const handleThemeChange = async (mode: ThemeMode) => {
-    try {
-      await setThemeMode(mode);
-      setShowThemeModal(false);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to change theme. Please try again.', [
-        { text: 'OK' },
-      ]);
-    }
+  const handleThemeChange = (mode: ThemeMode) => {
+    setThemeLoading(true);
+    setThemeMode(mode);
+    setShowThemeModal(false);
+    setThemeLoading(false);
   };
 
   const getCurrentLanguageLabel = () => {
@@ -154,7 +153,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
         <TouchableOpacity
           style={styles.selector}
           onPress={() => setShowLanguageModal(true)}
-          disabled={isLoading}
+          disabled={isLanguageLoading}
         >
           <Text style={styles.selectorText}>{getCurrentLanguageLabel()}</Text>
           <Text style={styles.arrow}>›</Text>
@@ -167,7 +166,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
         <TouchableOpacity
           style={styles.selector}
           onPress={() => setShowThemeModal(true)}
-          disabled={themeLoading}
+          disabled={isThemeLoading}
         >
           <Text style={styles.selectorText}>{getCurrentThemeLabel()}</Text>
           <Text style={styles.arrow}>›</Text>
