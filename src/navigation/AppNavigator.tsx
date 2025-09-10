@@ -6,7 +6,7 @@ import { RootStackParamList } from './types';
 import { useAppStore } from '../store';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import Icon from '@react-native-vector-icons/ionicons';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -20,7 +20,7 @@ const AppNavigator: React.FC = () => {
         onPress={() => navigation.navigate('Settings')}
         style={styles.settingsButton}
       >
-        <Icon name="settings-outline" size={26} color={theme.colors.text} />
+        <Ionicons name="settings-outline" size={26} color={theme.colors.text} />
       </TouchableOpacity>
     ),
     [theme.colors.text],
