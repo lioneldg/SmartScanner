@@ -76,4 +76,4 @@ yarn-error.log
 ios/Podfile.lock
 ios/SmartScanner.xcworkspace/
 # Ignore CocoaPods generated changes in project.pbxproj
-ios/*.xcodeproj/project.pbxproj
+# ios/*.xcodeproj/project.pbxproj
