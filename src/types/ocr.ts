@@ -5,20 +5,10 @@ export interface OcrResult {
   processing_time_ms: number;
 }
 
-export interface OcrError {
-  message: string;
-  error_type: string;
-}
-
 export interface OcrModuleResponse {
   success: boolean;
   result?: string; // JSON string of OcrResult
   message?: string;
-}
-
-export interface OcrModuleError {
-  code: string;
-  message: string;
 }
 
 export interface OcrConfiguration {
@@ -57,25 +47,4 @@ export interface OcrSettings {
   autoDetectTextType: boolean;
   minimumConfidence: number;
   preprocessImage: boolean;
-}
-
-export interface TextDetection {
-  text: string;
-  boundingBox?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  confidence: number;
-}
-
-export interface OcrAnalysisResult extends OcrResult {
-  detections: TextDetection[];
-  imageMetadata?: {
-    width: number;
-    height: number;
-    format: string;
-    size: number;
-  };
 }

@@ -1,10 +1,10 @@
 import i18n from '../locales/i18n';
 
-export interface DateFormatOptions {
+interface DateFormatOptions {
   includeTime?: boolean;
 }
 
-export class DateFormatService {
+class DateFormatService {
   /**
    * Format a date according to the current language settings
    * @param timestamp - Unix timestamp in milliseconds

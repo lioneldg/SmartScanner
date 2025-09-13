@@ -303,4 +303,3 @@ class CameraService {
 
 // Export singleton instance
 export const cameraService = new CameraService();
-export default cameraService;

@@ -271,4 +271,3 @@ class AdaptiveOcrService {
 
 // Export singleton instance
 export const adaptiveOcrService = new AdaptiveOcrService();
-export default adaptiveOcrService;

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "react-native.config.js"
+  ],
+  "ignoreUnresolved": [
+    "metro-transform-worker",
+    "metro-minify-terser"
+  ],
+  "ignoreDependencies": [
+    "@react-native/new-app-screen",
+    "@babel/preset-env",
+    "@babel/runtime",
+    "@react-native-community/cli",
+    "@react-native-community/cli-platform-android",
+    "@react-native-community/cli-platform-ios",
+    "@react-native/metro-babel-transformer"
+  ]
+}

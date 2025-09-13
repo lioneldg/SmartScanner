@@ -54,24 +54,6 @@ const determineLanguage = (selectedLanguage: LanguageType): string => {
 // Note: Language storage is now handled by the app store (Zustand)
 // This is kept for backward compatibility but not actively used
 
-// Check if a language is available in current options
-export const isLanguageAvailable = (language: LanguageType): boolean => {
-  const availableOptions = getAvailableLanguageOptions();
-  return availableOptions.some(option => option.key === language);
-};
-
-// Get fallback language if current is not available
-export const getFallbackLanguage = (
-  currentLanguage: LanguageType,
-): LanguageType => {
-  if (isLanguageAvailable(currentLanguage)) {
-    return currentLanguage;
-  }
-
-  const availableOptions = getAvailableLanguageOptions();
-  return availableOptions[0]?.key || LANGUAGES.SYSTEM;
-};
-
 // Initialize i18n with default settings
 const initI18n = async (): Promise<void> => {
   // Start with system language detection
