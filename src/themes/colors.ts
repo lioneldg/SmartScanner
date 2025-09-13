@@ -46,6 +46,7 @@ export const lightTheme: Theme = {
     text: '#1A1A1A',
     textSecondary: '#666666',
     textTertiary: '#999999',
+    buttonText: '#1A1A1A',
 
     // Primary colors
     primary: '#FF9500',
@@ -63,7 +64,7 @@ export const lightTheme: Theme = {
     divider: '#DEE2E6',
 
     // Interactive colors
-    ripple: 'rgba(255, 149, 0, 0.12)',
+    ripple: 'rgba(255, 149, 0, 0.06)',
     overlay: 'rgba(0, 0, 0, 0.1)',
 
     // Modal colors
@@ -84,11 +85,12 @@ export const darkTheme: Theme = {
     text: '#FFFFFF',
     textSecondary: '#AEAEB2',
     textTertiary: '#8E8E93',
+    buttonText: '#FFFFFF',
 
     // Primary colors
-    primary: '#FF9F0A',
-    primaryLight: '#FFB84D',
-    primaryDark: '#E68500',
+    primary: '#007AFF',
+    primaryLight: '#5AC8FA',
+    primaryDark: '#0051D5',
 
     // Status colors
     success: '#30D158',
@@ -101,7 +103,7 @@ export const darkTheme: Theme = {
     divider: '#48484A',
 
     // Interactive colors
-    ripple: 'rgba(255, 159, 10, 0.12)',
+    ripple: 'rgba(0, 122, 255, 0.06)',
     overlay: 'rgba(255, 255, 255, 0.1)',
 
     // Modal colors

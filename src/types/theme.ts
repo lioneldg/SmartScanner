@@ -11,6 +11,7 @@ export interface Theme {
     text: string;
     textSecondary: string;
     textTertiary: string;
+    buttonText: string;
 
     // Primary colors
     primary: string;
