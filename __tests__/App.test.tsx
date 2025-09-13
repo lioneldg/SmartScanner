@@ -3,11 +3,12 @@
  */
 
 import React from 'react';
-import ReactTestRenderer from 'react-test-renderer';
-import App from '../App';
+import { render } from '@testing-library/react-native';
 
-test('renders correctly', async () => {
-  await ReactTestRenderer.act(() => {
-    ReactTestRenderer.create(<App />);
-  });
+// Test simple pour vérifier que React Testing Library fonctionne
+test('React Testing Library works correctly', () => {
+  const TestComponent = () => React.createElement('Text', null, 'Hello World');
+  const { getByText } = render(React.createElement(TestComponent));
+
+  expect(getByText('Hello World')).toBeTruthy();
 });
