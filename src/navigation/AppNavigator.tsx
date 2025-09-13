@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { RootStackParamList } from './types';
-import { useAppStore } from '../store';
+import { useAppStore, useScanStore } from '../store';
 import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import ScansScreen from '../screens/ScansScreen';
 import { Ionicons } from '@react-native-vector-icons/ionicons';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -13,6 +14,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigator: React.FC = () => {
   const { t } = useTranslation();
   const { theme } = useAppStore();
+  const { scanHistory, clearHistory } = useScanStore();
 
   const renderSettingsButton = useCallback(
     (navigation: any) => (
@@ -25,6 +27,27 @@ const AppNavigator: React.FC = () => {
     ),
     [theme.colors.text],
   );
+
+  const renderClearButton = useCallback(() => {
+    const handleClearAll = () => {
+      Alert.alert(t('scans.clearAll'), t('scans.clearAllMessage'), [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.clear'),
+          style: 'destructive',
+          onPress: clearHistory,
+        },
+      ]);
+    };
+
+    if (scanHistory.length === 0) return null;
+
+    return (
+      <TouchableOpacity onPress={handleClearAll} style={styles.clearButton}>
+        <Ionicons name="trash-outline" size={20} color={theme.colors.error} />
+      </TouchableOpacity>
+    );
+  }, [scanHistory.length, theme.colors.error, t, clearHistory]);
 
   return (
     <Stack.Navigator
@@ -56,12 +79,23 @@ const AppNavigator: React.FC = () => {
           title: t('navigation.settings'),
         }}
       />
+      <Stack.Screen
+        name="Scans"
+        component={ScansScreen}
+        options={{
+          title: t('navigation.scans'),
+          headerRight: () => renderClearButton(),
+        }}
+      />
     </Stack.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
   settingsButton: {
+    padding: 8,
+  },
+  clearButton: {
     padding: 8,
   },
 });

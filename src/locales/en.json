@@ -5,22 +5,75 @@
     "english": "English",
     "french": "French",
     "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "clear": "Clear"
   },
   "navigation": {
-    "settings": "Settings"
+    "settings": "Settings",
+    "scans": "Scans"
   },
   "home": {
     "title": "Smart Scanner",
     "welcome": "Welcome to Smart Scanner",
-    "description": "Your intelligent scanning solution",
-    "startScanning": "Start Scanning"
+    "description": "Your intelligent scanning solution with native OCR",
+    "startScanning": "Start Scanning",
+    "viewScans": "View Scans",
+    "initializingOCR": "Initializing OCR...",
+    "ocrReady": "OCR Ready",
+    "ocrNotReady": "OCR Not Ready"
   },
   "settings": {
     "title": "Settings",
     "language": "Language",
     "selectLanguage": "Select Language",
     "theme": "Theme",
-    "selectTheme": "Select Theme",
+    "selectTheme": "Select Theme"
+  },
+  "error": {
+    "ocrInit": "OCR Initialization Error",
+    "ocrInitMessage": "Failed to initialize OCR engine. Please restart the app.",
+    "ocrNotReady": "OCR Not Ready",
+    "ocrNotReadyMessage": "OCR engine is not ready yet. Please wait.",
+    "scanFailed": "Scan Failed",
+    "scanFailedMessage": "Failed to extract text from image.",
+    "deleteFailed": "Delete Failed",
+    "deleteFailedMessage": "Failed to delete scan. Please try again."
+  },
+  "success": {
+    "textExtracted": "Text Extracted Successfully",
+    "copied": "Copied",
+    "copiedMessage": "Text has been copied to clipboard",
+    "copiedToClipboard": "Text copied to clipboard"
+  },
+  "warning": {
+    "noText": "No Text Detected",
+    "noTextMessage": "No text was detected in the image. Try with a clearer image."
+  },
+  "scans": {
+    "title": "Scans",
+    "noScans": "No Scans",
+    "noScansMessage": "You haven't performed any scans yet. Start by scanning a document!",
+    "statistics": "Statistics",
+    "total": "Total",
+    "avgConfidence": "Avg. Confidence",
+    "actions": "Actions",
+    "delete": "Delete",
+    "clearAll": "Clear All",
+    "clearAllMessage": "Are you sure you want to delete all scans? This action cannot be undone."
+  },
+  "camera": {
+    "selectSource": "Select Image Source",
+    "selectSourceMessage": "Choose how you want to capture the image",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "permissionTitle": "Camera Permission",
+    "permissionMessage": "SmartScanner needs access to camera to scan documents",
+    "askMeLater": "Ask Me Later",
+    "permissionDenied": "Camera permission denied",
+    "photoLibraryDenied": "Photo library permission denied",
+    "noImageCaptured": "No image captured",
+    "noImageSelected": "No image selected"
   }
 }

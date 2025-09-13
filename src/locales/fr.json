@@ -5,22 +5,75 @@
     "english": "Anglais",
     "french": "Français",
     "light": "Clair",
-    "dark": "Sombre"
+    "dark": "Sombre",
+    "ok": "OK",
+    "cancel": "Annuler",
+    "clear": "Effacer"
   },
   "navigation": {
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "scans": "Scans"
   },
   "home": {
     "title": "Smart Scanner",
     "welcome": "Bienvenue dans Smart Scanner",
-    "description": "Votre solution de numérisation intelligente",
-    "startScanning": "Commencer la numérisation"
+    "description": "Votre solution de numérisation intelligente avec OCR natif",
+    "startScanning": "Commencer la numérisation",
+    "viewScans": "Voir les scans",
+    "initializingOCR": "Initialisation de l'OCR...",
+    "ocrReady": "OCR prêt",
+    "ocrNotReady": "OCR non prêt"
   },
   "settings": {
     "title": "Paramètres",
     "language": "Langue",
     "selectLanguage": "Sélectionner la langue",
     "theme": "Thème",
-    "selectTheme": "Sélectionner le thème",
+    "selectTheme": "Sélectionner le thème"
+  },
+  "error": {
+    "ocrInit": "Erreur d'initialisation OCR",
+    "ocrInitMessage": "Impossible d'initialiser le moteur OCR. Veuillez redémarrer l'application.",
+    "ocrNotReady": "OCR non prêt",
+    "ocrNotReadyMessage": "Le moteur OCR n'est pas encore prêt. Veuillez patienter.",
+    "scanFailed": "Échec du scan",
+    "scanFailedMessage": "Impossible d'extraire le texte de l'image.",
+    "deleteFailed": "Erreur de suppression",
+    "deleteFailedMessage": "Impossible de supprimer le scan. Veuillez réessayer."
+  },
+  "success": {
+    "textExtracted": "Texte extrait avec succès",
+    "copied": "Copié",
+    "copiedMessage": "Le texte a été copié dans le presse-papier",
+    "copiedToClipboard": "Texte copié dans le presse-papier"
+  },
+  "warning": {
+    "noText": "Aucun texte détecté",
+    "noTextMessage": "Aucun texte n'a été détecté dans l'image. Essayez avec une image plus claire."
+  },
+  "scans": {
+    "title": "Scans",
+    "noScans": "Aucun scan",
+    "noScansMessage": "Vous n'avez pas encore effectué de scan. Commencez par scanner un document !",
+    "statistics": "Statistiques",
+    "total": "Total",
+    "avgConfidence": "Confiance moy.",
+    "actions": "Actions",
+    "delete": "Supprimer",
+    "clearAll": "Effacer tout",
+    "clearAllMessage": "Êtes-vous sûr de vouloir supprimer tous les scans ? Cette action est irréversible."
+  },
+  "camera": {
+    "selectSource": "Sélectionner la source d'image",
+    "selectSourceMessage": "Choisissez comment vous voulez capturer l'image",
+    "camera": "Appareil photo",
+    "gallery": "Galerie",
+    "permissionTitle": "Permission d'appareil photo",
+    "permissionMessage": "SmartScanner a besoin d'accéder à l'appareil photo pour scanner des documents",
+    "askMeLater": "Me demander plus tard",
+    "permissionDenied": "Permission d'appareil photo refusée",
+    "photoLibraryDenied": "Permission de galerie photo refusée",
+    "noImageCaptured": "Aucune image capturée",
+    "noImageSelected": "Aucune image sélectionnée"
   }
 }
