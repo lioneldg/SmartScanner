@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,19 +7,20 @@ import {
   Alert,
   FlatList,
   ActivityIndicator,
-} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useTranslation } from 'react-i18next';
-import { Ionicons } from '@react-native-vector-icons/ionicons';
-import Clipboard from '@react-native-clipboard/clipboard';
-import { useAppStore, useScanStore } from '../store';
-import { RootStackParamList } from '../navigation/types';
-import { ScanResult } from '../types/ocr';
-import DateFormatService from '../services/DateFormatService';
+} from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import { Ionicons } from "@react-native-vector-icons/ionicons";
+import Clipboard from "@react-native-clipboard/clipboard";
+import { useAppStore, useScanStore } from "../store";
+import { RootStackParamList } from "../navigation/types";
+import { ScanResult } from "../types/ocr";
+import DateFormatService from "../services/DateFormatService";
+import { Theme } from "../types/theme";
 
-type ScansScreenProps = NativeStackScreenProps<RootStackParamList, 'Scans'>;
+type ScansScreenProps = NativeStackScreenProps<RootStackParamList, "Scans">;
 
-const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
+const ScansScreen: React.FC<ScansScreenProps> = () => {
   const { t } = useTranslation();
   const { theme } = useAppStore();
   const { scanHistory, deleteScanItem, getStatistics } = useScanStore();
@@ -30,8 +31,8 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
 
   const handleCopyToClipboard = (text: string) => {
     Clipboard.setString(text);
-    Alert.alert(t('success.copied'), t('success.copiedMessage'), [
-      { text: t('common.ok') },
+    Alert.alert(t("success.copied"), t("success.copiedMessage"), [
+      { text: t("common.ok") },
     ]);
   };
 
@@ -41,19 +42,19 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
 
   const handleLongPress = (scan: ScanResult) => {
     Alert.alert(
-      t('scans.actions'),
-      scan.text.substring(0, 100) + (scan.text.length > 100 ? '...' : ''),
+      t("scans.actions"),
+      scan.text.substring(0, 100) + (scan.text.length > 100 ? "..." : ""),
       [
         {
-          text: t('common.cancel'),
-          style: 'cancel',
+          text: t("common.cancel"),
+          style: "cancel",
         },
         {
-          text: t('scans.delete'),
-          style: 'destructive',
+          text: t("scans.delete"),
+          style: "destructive",
           onPress: () => handleDeleteScan(scan.id),
         },
-      ],
+      ]
     );
   };
 
@@ -61,9 +62,9 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
     setIsDeleting(id);
     try {
       deleteScanItem(id);
-    } catch (error) {
-      Alert.alert(t('error.deleteFailed'), t('error.deleteFailedMessage'), [
-        { text: t('common.ok') },
+    } catch {
+      Alert.alert(t("error.deleteFailed"), t("error.deleteFailedMessage"), [
+        { text: t("common.ok") },
       ]);
     } finally {
       setIsDeleting(null);
@@ -116,8 +117,8 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
         size={64}
         color={theme.colors.textTertiary}
       />
-      <Text style={styles.emptyTitle}>{t('scans.noScans')}</Text>
-      <Text style={styles.emptyMessage}>{t('scans.noScansMessage')}</Text>
+      <Text style={styles.emptyTitle}>{t("scans.noScans")}</Text>
+      <Text style={styles.emptyMessage}>{t("scans.noScansMessage")}</Text>
     </View>
   );
 
@@ -128,13 +129,13 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
       {/* Statistics */}
       {stats.totalScans > 0 && (
         <View style={styles.statsContainer}>
-          <Text style={styles.statsTitle}>{t('scans.statistics')}</Text>
+          <Text style={styles.statsTitle}>{t("scans.statistics")}</Text>
           <View style={styles.statsRow}>
             <Text style={styles.statItem}>
-              {t('scans.total')}: {stats.totalScans}
+              {t("scans.total")}: {stats.totalScans}
             </Text>
             <Text style={styles.statItem}>
-              {t('scans.avgConfidence')}: {Math.round(stats.averageConfidence)}%
+              {t("scans.avgConfidence")}: {Math.round(stats.averageConfidence)}%
             </Text>
           </View>
         </View>
@@ -144,7 +145,7 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
       <FlatList
         data={scanHistory}
         renderItem={renderScanItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         ListEmptyComponent={renderEmptyState}
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
@@ -154,7 +155,7 @@ const ScansScreen: React.FC<ScansScreenProps> = ({}) => {
 };
 
 // Create dynamic styles based on theme
-const createStyles = (theme: any) =>
+const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
@@ -171,16 +172,16 @@ const createStyles = (theme: any) =>
       fontWeight: theme.typography.weights.bold,
       color: theme.colors.text,
       marginBottom: theme.spacing.sm,
-      textAlign: 'center',
+      textAlign: "center",
     },
     statsRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
+      flexDirection: "row",
+      justifyContent: "space-around",
     },
     statItem: {
       fontSize: theme.typography.sizes.sm,
       color: theme.colors.textSecondary,
-      textAlign: 'center',
+      textAlign: "center",
     },
     listContainer: {
       flexGrow: 1,
@@ -191,8 +192,8 @@ const createStyles = (theme: any) =>
       padding: theme.spacing.lg,
       marginBottom: theme.spacing.md,
       borderRadius: theme.borderRadius.lg,
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       borderLeftWidth: 4,
       borderLeftColor: theme.colors.primary,
     },
@@ -219,8 +220,8 @@ const createStyles = (theme: any) =>
       marginBottom: theme.spacing.xs,
     },
     scanMeta: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
     scanMetaText: {
       fontSize: theme.typography.sizes.xs,
@@ -228,8 +229,8 @@ const createStyles = (theme: any) =>
     },
     emptyContainer: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
       paddingHorizontal: theme.spacing.xl,
     },
     emptyTitle: {
@@ -242,7 +243,7 @@ const createStyles = (theme: any) =>
     emptyMessage: {
       fontSize: theme.typography.sizes.sm,
       color: theme.colors.textSecondary,
-      textAlign: 'center',
+      textAlign: "center",
       lineHeight: 20,
     },
   });

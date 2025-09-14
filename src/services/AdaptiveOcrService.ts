@@ -1,4 +1,5 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform } from "react-native";
+import { decode } from "base-64";
 import {
   OcrResult,
   OcrModuleResponse,
@@ -7,7 +8,7 @@ import {
   ScanResult,
   OcrLanguage,
   OcrSettings,
-} from '../types/ocr';
+} from "../types/ocr";
 
 interface OcrModuleInterface {
   initialize(language: string): Promise<OcrModuleResponse>;
@@ -16,34 +17,34 @@ interface OcrModuleInterface {
 
 // Get the appropriate OCR module based on platform
 const getOcrModule = (): OcrModuleInterface => {
-  console.log('getOcrModule: Platform is', Platform.OS);
+  console.log("getOcrModule: Platform is", Platform.OS);
   console.log(
-    'getOcrModule: Available NativeModules:',
-    Object.keys(NativeModules),
+    "getOcrModule: Available NativeModules:",
+    Object.keys(NativeModules)
   );
 
-  if (Platform.OS === 'ios') {
+  if (Platform.OS === "ios") {
     // Use Vision framework on iOS
     const { VisionOcrModule } = NativeModules;
     console.log(
-      'getOcrModule: VisionOcrModule:',
-      VisionOcrModule ? 'Found' : 'NULL',
+      "getOcrModule: VisionOcrModule:",
+      VisionOcrModule ? "Found" : "NULL"
     );
     return VisionOcrModule;
   } else {
     // Use ML Kit on Android
     const { OcrModule } = NativeModules;
-    console.log('getOcrModule: OcrModule:', OcrModule ? 'Found' : 'NULL');
+    console.log("getOcrModule: OcrModule:", OcrModule ? "Found" : "NULL");
     return OcrModule;
   }
 };
 
 class AdaptiveOcrService {
   private isInitialized: boolean = false;
-  private currentLanguage: OcrLanguage = 'eng';
+  private currentLanguage: OcrLanguage = "eng";
   private ocrModule: OcrModuleInterface;
   private settings: OcrSettings = {
-    language: 'eng',
+    language: "eng",
     autoDetectTextType: true,
     minimumConfidence: 60,
     preprocessImage: true,
@@ -51,12 +52,12 @@ class AdaptiveOcrService {
 
   constructor() {
     this.ocrModule = getOcrModule();
-    console.log('AdaptiveOcrService: Constructor called');
+    console.log("AdaptiveOcrService: Constructor called");
     console.log(
-      'AdaptiveOcrService: OCR Module:',
-      this.ocrModule ? 'Found' : 'NULL',
+      "AdaptiveOcrService: OCR Module:",
+      this.ocrModule ? "Found" : "NULL"
     );
-    console.log('AdaptiveOcrService: Platform:', Platform.OS);
+    console.log("AdaptiveOcrService: Platform:", Platform.OS);
   }
 
   /**
@@ -76,10 +77,10 @@ class AdaptiveOcrService {
         this.currentLanguage = language as OcrLanguage;
         console.log(`OCR Service initialized successfully on ${Platform.OS}`);
       } else {
-        throw new Error(response.message || 'Failed to initialize OCR');
+        throw new Error(response.message || "Failed to initialize OCR");
       }
     } catch (error) {
-      console.error('OCR initialization error:', error);
+      console.error("OCR initialization error:", error);
       throw new Error(`OCR initialization failed: ${error}`);
     }
   }
@@ -89,7 +90,7 @@ class AdaptiveOcrService {
    */
   async extractTextFromImage(imageData: ImageData): Promise<ScanResult> {
     if (!this.isInitialized) {
-      throw new Error('OCR service not initialized. Call initialize() first.');
+      throw new Error("OCR service not initialized. Call initialize() first.");
     }
 
     try {
@@ -102,13 +103,13 @@ class AdaptiveOcrService {
       } else if (imageData.uri) {
         bytes = await this.uriToBytes(imageData.uri);
       } else {
-        throw new Error('Invalid image data provided');
+        throw new Error("Invalid image data provided");
       }
 
       const response = await this.ocrModule.extractTextFromImage(bytes);
 
       if (!response.success || !response.result) {
-        throw new Error(response.message || 'Text extraction failed');
+        throw new Error(response.message || "Text extraction failed");
       }
 
       const ocrResult: OcrResult = JSON.parse(response.result);
@@ -126,12 +127,12 @@ class AdaptiveOcrService {
         imageUri: imageData.uri,
         type: this.settings.autoDetectTextType
           ? this.detectTextType(ocrResult.text)
-          : 'text',
+          : "text",
       };
 
       return scanResult;
     } catch (error) {
-      console.error('OCR extraction error:', error);
+      console.error("OCR extraction error:", error);
       throw new Error(`Text extraction failed: ${error}`);
     }
   }
@@ -191,7 +192,7 @@ class AdaptiveOcrService {
     return {
       platform: Platform.OS,
       engine:
-        Platform.OS === 'ios' ? 'Vision Framework' : 'ML Kit Text Recognition',
+        Platform.OS === "ios" ? "Vision Framework" : "ML Kit Text Recognition",
     };
   }
 
@@ -200,9 +201,9 @@ class AdaptiveOcrService {
    */
   reset(): void {
     this.isInitialized = false;
-    this.currentLanguage = 'eng';
+    this.currentLanguage = "eng";
     this.settings = {
-      language: 'eng',
+      language: "eng",
       autoDetectTextType: true,
       minimumConfidence: 60,
       preprocessImage: true,
@@ -215,37 +216,37 @@ class AdaptiveOcrService {
     return `ocr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private detectTextType(text: string): ScanResult['type'] {
+  private detectTextType(text: string): ScanResult["type"] {
     const trimmedText = text.trim();
 
     // URL detection
     const urlRegex = /^https?:\/\/[^\s]+$/i;
     if (urlRegex.test(trimmedText)) {
-      return 'url';
+      return "url";
     }
 
     // Email detection
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailRegex.test(trimmedText)) {
-      return 'email';
+      return "email";
     }
 
     // Phone number detection (basic)
     const phoneRegex = /^[+]?[\d\s\-()]{10,}$/;
-    if (phoneRegex.test(trimmedText.replace(/\s/g, ''))) {
-      return 'phone';
+    if (phoneRegex.test(trimmedText.replace(/\s/g, ""))) {
+      return "phone";
     }
 
     // Default to text
-    return 'text';
+    return "text";
   }
 
   private base64ToBytes(base64: string): number[] {
     // Remove data URL prefix if present
-    const cleanBase64 = base64.replace(/^data:image\/[a-z]+;base64,/, '');
+    const cleanBase64 = base64.replace(/^data:image\/[a-z]+;base64,/, "");
 
     // Convert base64 to binary string
-    const binaryString = require('base-64').decode(cleanBase64);
+    const binaryString = decode(cleanBase64);
 
     // Convert to byte array
     const bytes = new Array(binaryString.length);

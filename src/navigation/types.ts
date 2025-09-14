@@ -6,7 +6,11 @@ export type RootStackParamList = {
 };
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface RootParamList extends RootStackParamList {
+      // RootParamList extends RootStackParamList with all its properties
+    }
   }
 }
