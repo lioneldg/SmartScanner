@@ -1,7 +1,7 @@
 import { cameraService } from "../../src/services/CameraService";
 import { Platform, Alert, PermissionsAndroid } from "react-native";
 import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import ImagePicker from "react-native-image-crop-picker";
 
 // Mock dependencies
 jest.mock("react-native", () => ({
@@ -43,9 +43,11 @@ jest.mock("react-native-permissions", () => ({
   },
 }));
 
-jest.mock("react-native-image-picker", () => ({
-  launchCamera: jest.fn(),
-  launchImageLibrary: jest.fn(),
+jest.mock("react-native-image-crop-picker", () => ({
+  openCamera: jest.fn(),
+  openPicker: jest.fn(),
+  clean: jest.fn(),
+  cleanSingle: jest.fn(),
 }));
 
 describe("CameraService", () => {
@@ -169,28 +171,34 @@ describe("CameraService", () => {
       (check as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
     });
 
-    it("should capture image from camera successfully", async () => {
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+    it("should capture image from camera successfully with cropping", async () => {
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: null,
-          assets: [mockAsset],
-        });
-      });
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
 
       const result = await cameraService.captureFromCamera();
 
-      expect(launchCamera).toHaveBeenCalled();
+      expect(ImagePicker.openCamera).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cropping: true,
+          freeStyleCropEnabled: true,
+          enableRotationGesture: true,
+        })
+      );
       expect(result).toEqual({
         uri: "file://test.jpg",
         base64: "base64string",
@@ -199,6 +207,12 @@ describe("CameraService", () => {
         width: 1920,
         height: 1080,
         type: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       });
     });
 
@@ -206,23 +220,23 @@ describe("CameraService", () => {
       (check as jest.Mock).mockResolvedValue(RESULTS.DENIED);
       (request as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
 
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: null,
-          assets: [mockAsset],
-        });
-      });
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
 
       await cameraService.captureFromCamera();
 
@@ -239,12 +253,9 @@ describe("CameraService", () => {
     });
 
     it("should throw error when user cancels", async () => {
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: true,
-          errorMessage: null,
-          assets: [],
-        });
+      (ImagePicker.openCamera as jest.Mock).mockRejectedValue({
+        code: "E_PICKER_CANCELLED",
+        message: "User cancelled image selection",
       });
 
       await expect(cameraService.captureFromCamera()).rejects.toThrow(
@@ -253,67 +264,44 @@ describe("CameraService", () => {
     });
 
     it("should throw error on capture failure", async () => {
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: "Camera error",
-          assets: [],
-        });
-      });
+      (ImagePicker.openCamera as jest.Mock).mockRejectedValue(
+        new Error("Camera error")
+      );
 
       await expect(cameraService.captureFromCamera()).rejects.toThrow(
         "Camera error"
       );
     });
 
-    it("should throw error when no image captured", async () => {
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: null,
-          assets: [],
-        });
-      });
-
-      await expect(cameraService.captureFromCamera()).rejects.toThrow(
-        "No image captured"
-      );
-    });
-
     it("should use custom options", async () => {
       const customOptions = {
-        quality: 0.9 as const,
+        quality: 0.9,
         maxWidth: 1024,
         maxHeight: 1024,
+        cropping: false,
       };
 
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1024,
         height: 1024,
-        type: "image/jpeg",
+        mime: "image/jpeg",
       };
 
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: null,
-          assets: [mockAsset],
-        });
-      });
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
 
       await cameraService.captureFromCamera(customOptions);
 
-      expect(launchCamera).toHaveBeenCalledWith(
+      expect(ImagePicker.openCamera).toHaveBeenCalledWith(
         expect.objectContaining({
-          quality: 0.9,
-          maxWidth: 1024,
-          maxHeight: 1024,
-        }),
-        expect.any(Function)
+          compressImageQuality: 0.9,
+          width: 1024,
+          height: 1024,
+          cropping: false,
+        })
       );
     });
   });
@@ -324,30 +312,34 @@ describe("CameraService", () => {
       (check as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
     });
 
-    it("should select image from gallery successfully", async () => {
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+    it("should select image from gallery successfully with cropping", async () => {
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 100,
+          y: 100,
+          width: 1720,
+          height: 880,
+        },
       };
 
-      (launchImageLibrary as jest.Mock).mockImplementation(
-        (options, callback) => {
-          callback({
-            didCancel: false,
-            errorMessage: null,
-            assets: [mockAsset],
-          });
-        }
-      );
+      (ImagePicker.openPicker as jest.Mock).mockResolvedValue(mockImage);
 
       const result = await cameraService.selectFromGallery();
 
-      expect(launchImageLibrary).toHaveBeenCalled();
+      expect(ImagePicker.openPicker).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cropping: true,
+          freeStyleCropEnabled: true,
+          enableRotationGesture: true,
+        })
+      );
       expect(result).toEqual({
         uri: "file://test.jpg",
         base64: "base64string",
@@ -356,6 +348,12 @@ describe("CameraService", () => {
         width: 1920,
         height: 1080,
         type: "image/jpeg",
+        cropRect: {
+          x: 100,
+          y: 100,
+          width: 1720,
+          height: 880,
+        },
       });
     });
 
@@ -363,25 +361,23 @@ describe("CameraService", () => {
       (check as jest.Mock).mockResolvedValue(RESULTS.DENIED);
       (request as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
 
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchImageLibrary as jest.Mock).mockImplementation(
-        (options, callback) => {
-          callback({
-            didCancel: false,
-            errorMessage: null,
-            assets: [mockAsset],
-          });
-        }
-      );
+      (ImagePicker.openPicker as jest.Mock).mockResolvedValue(mockImage);
 
       await cameraService.selectFromGallery();
 
@@ -391,25 +387,23 @@ describe("CameraService", () => {
     it("should not request permission on Android", async () => {
       (Platform.OS as any) = "android";
 
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchImageLibrary as jest.Mock).mockImplementation(
-        (options, callback) => {
-          callback({
-            didCancel: false,
-            errorMessage: null,
-            assets: [mockAsset],
-          });
-        }
-      );
+      (ImagePicker.openPicker as jest.Mock).mockResolvedValue(mockImage);
 
       await cameraService.selectFromGallery();
 
@@ -424,6 +418,17 @@ describe("CameraService", () => {
         "Photo library permission denied"
       );
     });
+
+    it("should throw error when user cancels gallery selection", async () => {
+      (ImagePicker.openPicker as jest.Mock).mockRejectedValue({
+        code: "E_PICKER_CANCELLED",
+        message: "User cancelled image selection",
+      });
+
+      await expect(cameraService.selectFromGallery()).rejects.toThrow(
+        "User cancelled"
+      );
+    });
   });
 
   describe("Source Selection", () => {
@@ -433,23 +438,23 @@ describe("CameraService", () => {
     });
 
     it("should show source selection alert", async () => {
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: null,
-          assets: [mockAsset],
-        });
-      });
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
 
       // Mock Alert.alert to simulate camera selection
       (Alert.alert as jest.Mock).mockImplementation(
@@ -475,25 +480,23 @@ describe("CameraService", () => {
     });
 
     it("should handle gallery selection", async () => {
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchImageLibrary as jest.Mock).mockImplementation(
-        (options, callback) => {
-          callback({
-            didCancel: false,
-            errorMessage: null,
-            assets: [mockAsset],
-          });
-        }
-      );
+      (ImagePicker.openPicker as jest.Mock).mockResolvedValue(mockImage);
 
       // Mock Alert.alert to simulate gallery selection
       (Alert.alert as jest.Mock).mockImplementation(
@@ -530,54 +533,52 @@ describe("CameraService", () => {
     });
 
     it("should capture from camera source", async () => {
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchCamera as jest.Mock).mockImplementation((options, callback) => {
-        callback({
-          didCancel: false,
-          errorMessage: null,
-          assets: [mockAsset],
-        });
-      });
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
 
       const result = await cameraService.captureFromSource("camera");
 
-      expect(launchCamera).toHaveBeenCalled();
+      expect(ImagePicker.openCamera).toHaveBeenCalled();
       expect(result.uri).toBe("file://test.jpg");
     });
 
     it("should capture from gallery source", async () => {
-      const mockAsset = {
-        uri: "file://test.jpg",
-        base64: "base64string",
-        fileName: "test.jpg",
-        fileSize: 1024,
+      const mockImage = {
+        path: "file://test.jpg",
+        data: "base64string",
+        filename: "test.jpg",
+        size: 1024,
         width: 1920,
         height: 1080,
-        type: "image/jpeg",
+        mime: "image/jpeg",
+        cropRect: {
+          x: 0,
+          y: 0,
+          width: 1920,
+          height: 1080,
+        },
       };
 
-      (launchImageLibrary as jest.Mock).mockImplementation(
-        (options, callback) => {
-          callback({
-            didCancel: false,
-            errorMessage: null,
-            assets: [mockAsset],
-          });
-        }
-      );
+      (ImagePicker.openPicker as jest.Mock).mockResolvedValue(mockImage);
 
       const result = await cameraService.captureFromSource("gallery");
 
-      expect(launchImageLibrary).toHaveBeenCalled();
+      expect(ImagePicker.openPicker).toHaveBeenCalled();
       expect(result.uri).toBe("file://test.jpg");
     });
 
@@ -589,7 +590,7 @@ describe("CameraService", () => {
   });
 
   describe("OCR Optimized Options", () => {
-    it("should return optimized options for OCR", () => {
+    it("should return optimized options for OCR with cropping", () => {
       const options = cameraService.getOcrOptimizedOptions();
 
       expect(options).toEqual({
@@ -597,7 +598,10 @@ describe("CameraService", () => {
         maxWidth: 1920,
         maxHeight: 1920,
         includeBase64: false,
-        mediaType: "photo",
+        cropping: true,
+        freeStyleCropEnabled: true,
+        hideBottomControls: false,
+        enableRotationGesture: true,
       });
     });
   });

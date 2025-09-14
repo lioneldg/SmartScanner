@@ -2,7 +2,7 @@ module.exports = {
   preset: 'react-native',
   setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'],
   transformIgnorePatterns: [
-    'node_modules/(?!(react-native|@react-native|@react-navigation|react-native-screens|react-native-safe-area-context|react-native-vector-icons|@react-native-async-storage|@react-native-clipboard|react-native-image-picker|react-native-localize|react-native-permissions|i18next|react-i18next|zustand)/)',
+    'node_modules/(?!(react-native|@react-native|@react-navigation|react-native-screens|react-native-safe-area-context|react-native-vector-icons|@react-native-async-storage|@react-native-clipboard|react-native-image-crop-picker|react-native-localize|react-native-permissions|i18next|react-i18next|zustand)/)',
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',

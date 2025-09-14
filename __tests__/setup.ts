@@ -4,8 +4,7 @@ const mocks = require("../__mocks__");
 // Mock react-native-permissions
 jest.mock("react-native-permissions", () => mocks.permissions);
 
-// Mock react-native-image-picker
-jest.mock("react-native-image-picker", () => mocks.imagePicker);
+// react-native-image-picker is no longer used (replaced by react-native-image-crop-picker)
 
 // Mock react-native-localize
 jest.mock("react-native-localize", () => mocks.localize);

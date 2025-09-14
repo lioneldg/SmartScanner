@@ -1,4 +1,6 @@
-import { MediaType, PhotoQuality } from 'react-native-image-picker';
+// Local type definitions (no longer using react-native-image-picker)
+type PhotoQuality = number;
+type MediaType = "photo" | "video" | "mixed";
 
 export interface CaptureOptions {
   quality?: PhotoQuality;
@@ -6,6 +8,14 @@ export interface CaptureOptions {
   maxHeight?: number;
   includeBase64?: boolean;
   mediaType?: MediaType;
+  // Options for image cropping
+  cropping?: boolean;
+  cropperActiveWidgetColor?: string;
+  cropperStatusBarColor?: string;
+  cropperToolbarColor?: string;
+  freeStyleCropEnabled?: boolean;
+  hideBottomControls?: boolean;
+  enableRotationGesture?: boolean;
 }
 
 export interface CaptureResult {
@@ -16,6 +26,13 @@ export interface CaptureResult {
   width?: number;
   height?: number;
   type?: string;
+  // Cropping information
+  cropRect?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
 }
 
-export type CaptureSource = 'camera' | 'gallery';
+export type CaptureSource = "camera" | "gallery";

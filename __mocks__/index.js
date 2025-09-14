@@ -2,7 +2,7 @@
 const asyncStorage = require('./asyncStorage');
 const i18n = require('./i18n');
 const permissions = require('./permissions');
-const imagePicker = require('./imagePicker');
+// imagePicker removed - no longer using react-native-image-picker
 const localize = require('./localize');
 const clipboard = require('./clipboard');
 const safeAreaContext = require('./safeAreaContext');
@@ -19,7 +19,7 @@ module.exports = {
   asyncStorage,
   i18n,
   permissions,
-  imagePicker,
+  // imagePicker removed
   localize,
   clipboard,
   safeAreaContext,
