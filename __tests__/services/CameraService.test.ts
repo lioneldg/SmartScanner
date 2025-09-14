@@ -606,6 +606,264 @@ describe("CameraService", () => {
     });
   });
 
+  describe("Error Handling", () => {
+    beforeEach(() => {
+      (Platform.OS as any) = "ios";
+      (check as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
+    });
+
+    it("should handle null/undefined result from image picker", async () => {
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(null);
+
+      await expect(cameraService.captureFromCamera()).rejects.toThrow(
+        "Expected image result but received video"
+      );
+    });
+
+    it("should handle non-object result from image picker", async () => {
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue("invalid_result");
+
+      await expect(cameraService.captureFromCamera()).rejects.toThrow(
+        "Expected image result but received video"
+      );
+    });
+
+    it("should handle permission check errors for camera", async () => {
+      (check as jest.Mock).mockRejectedValue(
+        new Error("Permission check failed")
+      );
+
+      const result = await cameraService.hasCameraPermission();
+
+      expect(result).toBe(false);
+    });
+
+    it("should handle permission check errors for photo library", async () => {
+      (check as jest.Mock).mockRejectedValue(
+        new Error("Permission check failed")
+      );
+
+      const result = await cameraService.hasPhotoLibraryPermission();
+
+      expect(result).toBe(false);
+    });
+
+    it("should handle photo library permission request errors", async () => {
+      (request as jest.Mock).mockRejectedValue(
+        new Error("Permission request failed")
+      );
+
+      const result = await cameraService.requestPhotoLibraryPermission();
+
+      expect(result).toBe(false);
+    });
+
+    it("should handle video result from camera (not image)", async () => {
+      const mockVideo = {
+        path: "file://test.mp4",
+        mime: "video/mp4",
+        size: 2048,
+        width: 1920,
+        height: 1080,
+      };
+
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockVideo);
+
+      await expect(cameraService.captureFromCamera()).rejects.toThrow(
+        "Expected image result but received video"
+      );
+    });
+
+    it("should handle video result from gallery (not image)", async () => {
+      const mockVideo = {
+        path: "file://test.mp4",
+        mime: "video/mp4",
+        size: 2048,
+        width: 1920,
+        height: 1080,
+      };
+
+      (ImagePicker.openPicker as jest.Mock).mockResolvedValue(mockVideo);
+
+      await expect(cameraService.selectFromGallery()).rejects.toThrow(
+        "Expected image result but received video"
+      );
+    });
+
+    it("should handle error without message property in camera", async () => {
+      const errorWithoutMessage = { code: "SOME_ERROR" };
+      (ImagePicker.openCamera as jest.Mock).mockRejectedValue(
+        errorWithoutMessage
+      );
+
+      await expect(cameraService.captureFromCamera()).rejects.toThrow(
+        "No image captured"
+      );
+    });
+
+    it("should handle error without message property in gallery", async () => {
+      const errorWithoutMessage = { code: "SOME_ERROR" };
+      (ImagePicker.openPicker as jest.Mock).mockRejectedValue(
+        errorWithoutMessage
+      );
+
+      await expect(cameraService.selectFromGallery()).rejects.toThrow(
+        "No image selected"
+      );
+    });
+
+    it("should handle error with translation function in camera", async () => {
+      const t = jest.fn((key: string) => `translated_${key}`);
+      const errorWithoutMessage = { code: "SOME_ERROR" };
+      (ImagePicker.openCamera as jest.Mock).mockRejectedValue(
+        errorWithoutMessage
+      );
+
+      await expect(
+        cameraService.captureFromCamera(undefined, t)
+      ).rejects.toThrow("translated_camera.noImageCaptured");
+    });
+
+    it("should handle error with translation function in gallery", async () => {
+      const t = jest.fn((key: string) => `translated_${key}`);
+      const errorWithoutMessage = { code: "SOME_ERROR" };
+      (ImagePicker.openPicker as jest.Mock).mockRejectedValue(
+        errorWithoutMessage
+      );
+
+      await expect(
+        cameraService.selectFromGallery(undefined, t)
+      ).rejects.toThrow("translated_camera.noImageSelected");
+    });
+  });
+
+  describe("Options Mapping Coverage", () => {
+    beforeEach(() => {
+      (Platform.OS as any) = "ios";
+      (check as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
+    });
+
+    it("should handle all mapping options in mapCaptureOptionsToPickerOptions", async () => {
+      const fullOptions = {
+        quality: 0.8,
+        maxWidth: 1024,
+        maxHeight: 768,
+        includeBase64: true,
+        cropping: false,
+        freeStyleCropEnabled: false,
+        hideBottomControls: true,
+        enableRotationGesture: false,
+        cropperActiveWidgetColor: "#FF0000",
+        cropperStatusBarColor: "#00FF00",
+        cropperToolbarColor: "#0000FF",
+      };
+
+      const mockImage = {
+        path: "file://test.jpg",
+        mime: "image/jpeg",
+        size: 1024,
+        width: 1024,
+        height: 768,
+      };
+
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
+
+      await cameraService.captureFromCamera(fullOptions);
+
+      expect(ImagePicker.openCamera).toHaveBeenCalledWith(
+        expect.objectContaining({
+          compressImageQuality: 0.8,
+          width: 1024,
+          height: 768,
+          includeBase64: true,
+          cropping: false,
+          freeStyleCropEnabled: false,
+          hideBottomControls: true,
+          enableRotationGesture: false,
+          cropperActiveWidgetColor: "#FF0000",
+          cropperStatusBarColor: "#00FF00",
+          cropperToolbarColor: "#0000FF",
+        })
+      );
+    });
+
+    it("should handle falsy values in options mapping", async () => {
+      const optionsWithFalsyValues = {
+        quality: 0, // falsy but should be mapped
+        maxWidth: 0, // falsy, should not be mapped
+        maxHeight: undefined, // should not be mapped
+        includeBase64: false, // should be mapped
+        cropping: undefined, // should not be mapped
+      };
+
+      const mockImage = {
+        path: "file://test.jpg",
+        mime: "image/jpeg",
+        size: 1024,
+        width: 1920,
+        height: 1920,
+      };
+
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
+
+      await cameraService.captureFromCamera(optionsWithFalsyValues);
+
+      expect(ImagePicker.openCamera).toHaveBeenCalledWith(
+        expect.objectContaining({
+          includeBase64: false,
+          // quality: 0 should not be mapped because it's falsy
+          // maxWidth: 0 should not be mapped because it's falsy
+          // Should use default width/height from getDefaultOptions
+          width: 1920,
+          height: 1920,
+        })
+      );
+    });
+  });
+
+  describe("Source Selection Error Handling", () => {
+    beforeEach(() => {
+      (Platform.OS as any) = "ios";
+      (check as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
+    });
+
+    it("should handle camera error in showSourceSelection", async () => {
+      (ImagePicker.openCamera as jest.Mock).mockRejectedValue(
+        new Error("Camera failed")
+      );
+
+      // Mock Alert.alert to simulate camera selection
+      (Alert.alert as jest.Mock).mockImplementation(
+        (title, message, buttons) => {
+          // Simulate pressing the camera button which will fail
+          buttons[0].onPress();
+        }
+      );
+
+      await expect(cameraService.showSourceSelection()).rejects.toThrow(
+        "Camera failed"
+      );
+    });
+
+    it("should handle gallery error in showSourceSelection", async () => {
+      (ImagePicker.openPicker as jest.Mock).mockRejectedValue(
+        new Error("Gallery failed")
+      );
+
+      // Mock Alert.alert to simulate gallery selection
+      (Alert.alert as jest.Mock).mockImplementation(
+        (title, message, buttons) => {
+          // Simulate pressing the gallery button which will fail
+          buttons[1].onPress();
+        }
+      );
+
+      await expect(cameraService.showSourceSelection()).rejects.toThrow(
+        "Gallery failed"
+      );
+    });
+  });
+
   describe("Internationalization", () => {
     beforeEach(() => {
       (Platform.OS as any) = "ios";
@@ -637,6 +895,51 @@ describe("CameraService", () => {
       expect(t).toHaveBeenCalledWith("camera.askMeLater");
       expect(t).toHaveBeenCalledWith("common.cancel");
       expect(t).toHaveBeenCalledWith("common.ok");
+    });
+
+    it("should use translation for gallery permission error", async () => {
+      const t = jest.fn((key: string) => `translated_${key}`);
+
+      await expect(
+        cameraService.selectFromGallery(undefined, t)
+      ).rejects.toThrow("translated_camera.photoLibraryDenied");
+
+      expect(t).toHaveBeenCalledWith("camera.photoLibraryDenied");
+    });
+
+    it("should use translation in showSourceSelection", async () => {
+      const t = jest.fn((key: string) => `translated_${key}`);
+      (check as jest.Mock).mockResolvedValue(RESULTS.GRANTED);
+
+      const mockImage = {
+        path: "file://test.jpg",
+        mime: "image/jpeg",
+        size: 1024,
+        width: 1920,
+        height: 1080,
+      };
+
+      (ImagePicker.openCamera as jest.Mock).mockResolvedValue(mockImage);
+
+      // Mock Alert.alert to simulate camera selection
+      (Alert.alert as jest.Mock).mockImplementation(
+        (title, message, buttons) => {
+          buttons[0].onPress();
+        }
+      );
+
+      await cameraService.showSourceSelection(undefined, t);
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "translated_camera.selectSource",
+        "translated_camera.selectSourceMessage",
+        expect.arrayContaining([
+          expect.objectContaining({ text: "translated_camera.camera" }),
+          expect.objectContaining({ text: "translated_camera.gallery" }),
+          expect.objectContaining({ text: "translated_common.cancel" }),
+        ]),
+        { cancelable: true }
+      );
     });
   });
 });

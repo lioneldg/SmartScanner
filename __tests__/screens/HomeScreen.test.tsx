@@ -476,6 +476,11 @@ describe("HomeScreen", () => {
         [{ text: "common.ok" }]
       );
     });
+
+    // Verify that addScanResult WAS called for valid text
+    await waitFor(() => {
+      expect(defaultScanStoreState.addScanResult).toHaveBeenCalled();
+    });
   });
 
   it("should show warning when no text extracted", async () => {
@@ -504,6 +509,68 @@ describe("HomeScreen", () => {
         [{ text: "common.ok" }]
       );
     });
+  });
+
+  it("should not add empty text to history or copy to clipboard", async () => {
+    mockAdaptiveOcrService.isReady.mockReturnValue(true);
+    mockAdaptiveOcrService.extractTextFromImage.mockResolvedValue({
+      id: "test-id",
+      text: "", // Completely empty text
+      confidence: 95,
+      language: "eng",
+      processing_time_ms: 100,
+      timestamp: Date.now(),
+      type: "text",
+    });
+
+    const { getByText } = render(
+      <HomeScreen navigation={mockNavigation as any} route={mockRoute as any} />
+    );
+
+    const scanButton = getByText("home.startScanning");
+    fireEvent.press(scanButton);
+
+    await waitFor(() => {
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "warning.noText",
+        "warning.noTextMessage",
+        [{ text: "common.ok" }]
+      );
+    });
+
+    // Verify that addScanResult was NOT called for empty text
+    expect(defaultScanStoreState.addScanResult).not.toHaveBeenCalled();
+  });
+
+  it("should not add whitespace-only text to history or copy to clipboard", async () => {
+    mockAdaptiveOcrService.isReady.mockReturnValue(true);
+    mockAdaptiveOcrService.extractTextFromImage.mockResolvedValue({
+      id: "test-id",
+      text: "   \n\t  ", // Only whitespace characters
+      confidence: 95,
+      language: "eng",
+      processing_time_ms: 100,
+      timestamp: Date.now(),
+      type: "text",
+    });
+
+    const { getByText } = render(
+      <HomeScreen navigation={mockNavigation as any} route={mockRoute as any} />
+    );
+
+    const scanButton = getByText("home.startScanning");
+    fireEvent.press(scanButton);
+
+    await waitFor(() => {
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "warning.noText",
+        "warning.noTextMessage",
+        [{ text: "common.ok" }]
+      );
+    });
+
+    // Verify that addScanResult was NOT called for whitespace-only text
+    expect(defaultScanStoreState.addScanResult).not.toHaveBeenCalled();
   });
 
   it("should handle scan cancellation gracefully", async () => {

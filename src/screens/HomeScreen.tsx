@@ -107,11 +107,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         uri: captureResult.uri,
       });
 
-      // Add to scan history
-      addScanResult(scanResult);
-
-      // Copy to clipboard automatically
+      // Only add to history and copy if text was detected
       if (scanResult.text.trim()) {
+        // Add to scan history
+        addScanResult(scanResult);
+
+        // Copy to clipboard automatically
         Clipboard.setString(scanResult.text);
         Alert.alert(
           t("success.textExtracted"),
