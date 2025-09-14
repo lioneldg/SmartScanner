@@ -1,17 +1,17 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import * as RNLocalize from 'react-native-localize';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import * as RNLocalize from "react-native-localize";
 
 // Import translation files
-import en from './en.json';
-import fr from './fr.json';
+import en from "./en.json";
+import fr from "./fr.json";
 
 // Available languages
-export const LANGUAGES = {
-  SYSTEM: 'system',
-  EN: 'en',
-  FR: 'fr',
-} as const;
+export const LANGUAGES = Object.freeze({
+  SYSTEM: "system",
+  EN: "en",
+  FR: "fr",
+} as const);
 
 export type LanguageType = (typeof LANGUAGES)[keyof typeof LANGUAGES];
 
@@ -22,15 +22,24 @@ const resources = {
 };
 
 // Get device locale
-const getDeviceLocale = (): string => {
-  const locales = RNLocalize.getLocales();
-  if (locales.length > 0) {
-    return locales[0].languageCode;
+export const getDeviceLocale = (): string => {
+  try {
+    const locales = RNLocalize.getLocales();
+    if (locales && locales.length > 0) {
+      // Find first valid language code
+      for (const locale of locales) {
+        if (locale.languageCode && locale.languageCode.trim() !== "") {
+          return locale.languageCode;
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Error getting device locale:", error);
   }
-  return 'en'; // fallback
+  return "en"; // fallback
 };
 
-const determineLanguage = (selectedLanguage: LanguageType): string => {
+export const determineLanguage = (selectedLanguage: LanguageType): string => {
   if (selectedLanguage !== LANGUAGES.SYSTEM) {
     return selectedLanguage;
   }
@@ -42,12 +51,12 @@ const determineLanguage = (selectedLanguage: LanguageType): string => {
   // - French if device is in French (same language)
   // - English if device is in another language (default to English)
   switch (deviceLocale) {
-    case 'en':
-      return 'en'; // English if phone is in English
-    case 'fr':
-      return 'fr'; // French if phone is in French
+    case "en":
+      return "en"; // English if phone is in English
+    case "fr":
+      return "fr"; // French if phone is in French
     default:
-      return 'en'; // English if phone is in another language
+      return "en"; // English if phone is in another language
   }
 };
 
@@ -58,12 +67,12 @@ const determineLanguage = (selectedLanguage: LanguageType): string => {
 const initI18n = async (): Promise<void> => {
   // Start with system language detection
   const systemLanguage = getDeviceLocale();
-  const initialLanguage = systemLanguage === 'fr' ? 'fr' : 'en';
+  const initialLanguage = systemLanguage === "fr" ? "fr" : "en";
 
   await i18n.use(initReactI18next).init({
     resources,
     lng: initialLanguage,
-    fallbackLng: 'en',
+    fallbackLng: "en",
     debug: __DEV__,
     interpolation: {
       escapeValue: false,
@@ -85,23 +94,23 @@ export const getAvailableLanguageOptions = () => {
   const deviceLocale = getDeviceLocale();
 
   switch (deviceLocale) {
-    case 'fr':
+    case "fr":
       // If system is French: System (=French) and English
       return [
-        { key: LANGUAGES.SYSTEM as LanguageType, labelKey: 'common.system' },
-        { key: LANGUAGES.EN as LanguageType, labelKey: 'common.english' },
+        { key: LANGUAGES.SYSTEM as LanguageType, labelKey: "common.system" },
+        { key: LANGUAGES.EN as LanguageType, labelKey: "common.english" },
       ];
-    case 'en':
+    case "en":
       // If system is English: System (=English) and French
       return [
-        { key: LANGUAGES.SYSTEM as LanguageType, labelKey: 'common.system' },
-        { key: LANGUAGES.FR as LanguageType, labelKey: 'common.french' },
+        { key: LANGUAGES.SYSTEM as LanguageType, labelKey: "common.system" },
+        { key: LANGUAGES.FR as LanguageType, labelKey: "common.french" },
       ];
     default:
       // If system is other language: English and French (no System option)
       return [
-        { key: LANGUAGES.EN as LanguageType, labelKey: 'common.english' },
-        { key: LANGUAGES.FR as LanguageType, labelKey: 'common.french' },
+        { key: LANGUAGES.EN as LanguageType, labelKey: "common.english" },
+        { key: LANGUAGES.FR as LanguageType, labelKey: "common.french" },
       ];
   }
 };

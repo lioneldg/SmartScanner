@@ -59,7 +59,7 @@ export default [
       ...tseslint.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
-      'no-unused-vars': 'off', // Désactivé en faveur de @typescript-eslint/no-unused-vars
+      'no-unused-vars': 'off', // Disabled in favor of @typescript-eslint/no-unused-vars
       'no-console': 'off',
       'prefer-const': 'warn',
       'no-var': 'error',
@@ -68,7 +68,7 @@ export default [
     },
   },
   {
-    files: ['*.config.js', '*.config.ts'],
+    files: ['*.config.js', '*.config.ts', '__mocks__/**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'commonjs',
@@ -81,6 +81,7 @@ export default [
         exports: 'writable',
         global: 'readonly',
         console: 'readonly',
+        jest: 'readonly',
       },
     },
     rules: {

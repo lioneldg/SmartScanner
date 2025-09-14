@@ -154,8 +154,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
           style={styles.selector}
           onPress={() => setShowLanguageModal(true)}
           disabled={isLanguageLoading}
+          testID="language-selector"
         >
-          <Text style={styles.selectorText}>{getCurrentLanguageLabel()}</Text>
+          <Text style={styles.selectorText} testID="language-selector-text">
+            {getCurrentLanguageLabel()}
+          </Text>
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
       </View>
@@ -167,8 +170,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
           style={styles.selector}
           onPress={() => setShowThemeModal(true)}
           disabled={isThemeLoading}
+          testID="theme-selector"
         >
-          <Text style={styles.selectorText}>{getCurrentThemeLabel()}</Text>
+          <Text style={styles.selectorText} testID="theme-selector-text">
+            {getCurrentThemeLabel()}
+          </Text>
           <Text style={styles.arrow}>›</Text>
         </TouchableOpacity>
       </View>

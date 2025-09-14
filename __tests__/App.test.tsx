@@ -1,14 +1,57 @@
-/**
- * @format
- */
+import React from "react";
+import { render } from "@testing-library/react-native";
+import App from "../App";
 
-import React from 'react';
-import { render } from '@testing-library/react-native';
+// Mock the store
+jest.mock("../src/store", () => ({
+  useAppStore: jest.fn(() => ({
+    isDark: false,
+    theme: {
+      colors: {
+        background: "#ffffff",
+        text: "#000000",
+      },
+    },
+  })),
+  useScanStore: jest.fn(() => ({
+    scanHistory: [],
+    addScanResult: jest.fn(),
+    clearHistory: jest.fn(),
+  })),
+}));
 
-// Test simple pour vérifier que React Testing Library fonctionne
-test('React Testing Library works correctly', () => {
-  const TestComponent = () => React.createElement('Text', null, 'Hello World');
-  const { getByText } = render(React.createElement(TestComponent));
+// Mock the AppInitializer component
+jest.mock("../src/components/AppInitializer", () => {
+  return function MockAppInitializer({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) {
+    return <>{children}</>;
+  };
+});
 
-  expect(getByText('Hello World')).toBeTruthy();
+// Mock the AppNavigator component
+jest.mock("../src/navigation/AppNavigator", () => {
+  const React = require("react");
+  const { View, Text } = require("react-native");
+  return function MockAppNavigator() {
+    return React.createElement(
+      View,
+      { testID: "app-navigator" },
+      React.createElement(Text, null, "App Navigator")
+    );
+  };
+});
+
+describe("App", () => {
+  it("should render without crashing", () => {
+    const { getByTestId } = render(<App />);
+    expect(getByTestId("app-navigator")).toBeTruthy();
+  });
+
+  it("should render AppNavigator", () => {
+    const { getByTestId } = render(<App />);
+    expect(getByTestId("app-navigator")).toBeTruthy();
+  });
 });

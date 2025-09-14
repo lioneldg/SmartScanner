@@ -39,7 +39,7 @@ const getOcrModule = (): OcrModuleInterface => {
   }
 };
 
-class AdaptiveOcrService {
+export class AdaptiveOcrService {
   private isInitialized: boolean = false;
   private currentLanguage: OcrLanguage = "eng";
   private ocrModule: OcrModuleInterface;

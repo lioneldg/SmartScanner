@@ -207,6 +207,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         ]}
         onPress={handleScanPress}
         disabled={!ocrReady || isScanning}
+        testID="scan-button"
       >
         {isScanning ? (
           <ActivityIndicator size="small" color={theme.colors.buttonText} />

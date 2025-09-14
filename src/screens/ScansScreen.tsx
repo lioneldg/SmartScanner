@@ -72,7 +72,7 @@ const ScansScreen: React.FC<ScansScreenProps> = () => {
   };
 
   const renderScanItem = ({ item }: { item: ScanResult }) => (
-    <View style={styles.scanItem}>
+    <View style={styles.scanItem} testID={`scan-item-${item.id}`}>
       {isDeleting === item.id ? (
         <ActivityIndicator size="small" color={theme.colors.primary} />
       ) : (
@@ -98,6 +98,7 @@ const ScansScreen: React.FC<ScansScreenProps> = () => {
             style={styles.copyButton}
             onPress={() => handleCopyPress(item)}
             disabled={isDeleting === item.id}
+            testID={`copy-button-${item.id}`}
           >
             <Ionicons
               name="copy-outline"
@@ -116,6 +117,7 @@ const ScansScreen: React.FC<ScansScreenProps> = () => {
         name="scan-outline"
         size={64}
         color={theme.colors.textTertiary}
+        testID="scan-outline-icon"
       />
       <Text style={styles.emptyTitle}>{t("scans.noScans")}</Text>
       <Text style={styles.emptyMessage}>{t("scans.noScansMessage")}</Text>

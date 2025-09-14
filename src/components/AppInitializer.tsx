@@ -1,11 +1,11 @@
-import React, { useEffect, ReactNode, useState } from 'react';
+import React, { useEffect, ReactNode, useState } from "react";
 import {
   useColorScheme,
   View,
   ActivityIndicator,
   StyleSheet,
-} from 'react-native';
-import { useAppStore } from '../store';
+} from "react-native";
+import { useAppStore } from "../store";
 
 interface AppInitializerProps {
   children: ReactNode;
@@ -21,7 +21,7 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
     const initializeAppState = async () => {
       if (hasHydrated && !isInitialized) {
         // First initialize from system if needed
-        initializeFromSystem(systemColorScheme as 'light' | 'dark' | null);
+        initializeFromSystem(systemColorScheme as "light" | "dark" | null);
 
         // Then initialize the app (theme and language)
         await initializeApp();
@@ -43,7 +43,7 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   if (!hasHydrated || !isInitialized) {
     return (
       <View style={loadingStyles.container}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" testID="activity-indicator" />
       </View>
     );
   }
@@ -54,8 +54,8 @@ const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
 const loadingStyles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
