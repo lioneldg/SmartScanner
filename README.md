@@ -1,97 +1,127 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# SmartScanner 📱
 
-# Getting Started
+**Your intelligent scanning solution with native text recognition**
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+SmartScanner is a modern mobile application that uses native optical character recognition (OCR) to extract text from images and documents. Designed for Android and iOS, it delivers optimal performance through the use of each platform's native frameworks.
 
-## Step 1: Start Metro
+## ✨ Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- 🔍 **Native text recognition** - Uses Google ML Kit (Android) and Apple Vision (iOS)
+- 📸 **Image capture** - Built-in camera and gallery selection
+- 🌐 **Multilingual** - Automatic language detection support
+- 🎨 **Modern interface** - Light/dark themes with adaptive design
+- 💾 **Scan history** - Save and manage your scans
+- 📋 **Quick copy** - Copy extracted text to clipboard
+- 🔒 **Offline** - Works without internet connection
+- ⚡ **Performance** - Fast and optimized processing
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 🚀 Installation
 
-```sh
-# Using npm
-npm start
+### Prerequisites
 
-# OR using Yarn
+- **Node.js** ≥ 20
+- **Yarn** (package manager)
+- **Android Studio** (for Android)
+- **Xcode** (for iOS)
+
+### Install dependencies
+
+```bash
+# Clone the project
+git clone <repository-url>
+cd SmartScanner
+
+# Install dependencies
+yarn install
+```
+
+### iOS Configuration
+
+```bash
+# Install CocoaPods dependencies
+cd ios
+pod install
+cd ..
+```
+
+## 🏃‍♂️ Running the app
+
+### Start development server
+
+```bash
 yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
 ### Android
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
+```bash
 yarn android
 ```
 
 ### iOS
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
+```bash
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 🛠️ Development
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### Testing
 
-## Step 3: Modify your app
+```bash
+# Run all tests
+yarn test
 
-Now that you have successfully run the app, let's make changes!
+# Tests with coverage
+yarn test --coverage
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### Linting
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```bash
+yarn lint
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## 📱 Usage
 
-## Congratulations! :tada:
+1. **Launch the application** on your device or simulator
+2. **Allow camera access** when prompted
+3. **Tap "Start Scanning"** to capture an image
+4. **Text will be automatically extracted** and displayed
+5. **Copy the text** or view history in the "Scans" tab
 
-You've successfully run and modified your React Native App. :partying_face:
+## 🏗️ Technical Architecture
 
-### Now what?
+- **React Native** 0.81+ with TypeScript
+- **Navigation**: React Navigation v7
+- **Global state**: Zustand
+- **Native OCR**: Google ML Kit (Android) / Apple Vision (iOS)
+- **Internationalization**: i18next
+- **Testing**: Jest + React Native Testing Library
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+## 📋 Requirements
 
-# Troubleshooting
+- **Android**: API Level 21+ (Android 5.0+)
+- **iOS**: iOS 13+ (for Vision framework)
+- **Memory**: 2GB RAM minimum
+- **Storage**: 100MB free space
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 🔧 Troubleshooting
 
-# Learn More
+### Common issues
 
-To learn more about React Native, take a look at the following resources:
+- **OCR Error**: Restart the application
+- **Permissions denied**: Check device settings
+- **Slow performance**: Close other applications
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### Support
+
+For help or to report an issue, check the project's Issues section.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+---
+
+**Developed with ❤️ in React Native**
