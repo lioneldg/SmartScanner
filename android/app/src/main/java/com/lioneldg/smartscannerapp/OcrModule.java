@@ -1,4 +1,4 @@
-package com.smartscanner;
+package com.lioneldg.smartscannerapp;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;

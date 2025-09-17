@@ -1,4 +1,4 @@
-package com.smartscanner
+package com.lioneldg.smartscannerapp
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
