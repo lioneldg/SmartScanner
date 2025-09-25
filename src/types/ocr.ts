@@ -4,13 +4,6 @@ export interface OcrResult {
   language: string;
   processing_time_ms: number;
 }
-
-export interface OcrModuleResponse {
-  success: boolean;
-  result?: string; // JSON string of OcrResult
-  message?: string;
-}
-
 export interface OcrConfiguration {
   language: string;
   dataPath?: string;
@@ -26,21 +19,21 @@ export interface ScanResult extends OcrResult {
   id: string;
   timestamp: number;
   imageUri?: string;
-  type: 'text' | 'url' | 'email' | 'phone' | 'unknown';
+  type: "text" | "url" | "email" | "phone" | "unknown";
 }
 
 export type OcrLanguage =
-  | 'eng' // English
-  | 'fra' // French
-  | 'deu' // German
-  | 'spa' // Spanish
-  | 'ita' // Italian
-  | 'por' // Portuguese
-  | 'rus' // Russian
-  | 'chi_sim' // Chinese Simplified
-  | 'chi_tra' // Chinese Traditional
-  | 'jpn' // Japanese
-  | 'kor'; // Korean
+  | "eng" // English
+  | "fra" // French
+  | "deu" // German
+  | "spa" // Spanish
+  | "ita" // Italian
+  | "por" // Portuguese
+  | "rus" // Russian
+  | "chi_sim" // Chinese Simplified
+  | "chi_tra" // Chinese Traditional
+  | "jpn" // Japanese
+  | "kor"; // Korean
 
 export interface OcrSettings {
   language: OcrLanguage;

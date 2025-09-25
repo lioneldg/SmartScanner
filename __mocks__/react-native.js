@@ -8,13 +8,9 @@ const mockComponent = (name) => {
 };
 
 const mockNativeModules = {
-  VisionOcrModule: {
+  NativeOcr: {
     initialize: jest.fn(),
-    extractText: jest.fn(),
-  },
-  OcrModule: {
-    initialize: jest.fn(),
-    extractText: jest.fn(),
+    extractTextFromImage: jest.fn(),
   },
   DevMenu: {
     addItem: jest.fn(),

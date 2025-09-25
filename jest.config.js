@@ -15,6 +15,8 @@ module.exports = {
     // Exclude pure type definitions from coverage
     '!src/types/**/*',
     '!src/navigation/types.ts',
+    // Exclude specs folder from coverage
+    '!src/specs/**/*',
   ],
   coverageThreshold: {
     global: {
@@ -34,6 +36,10 @@ module.exports = {
   testMatch: [
     '**/__tests__/**/*.(test|spec).(ts|tsx)',
     '**/*.(test|spec).(ts|tsx)',
+  ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/src/specs/',
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
 };

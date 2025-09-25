@@ -21,12 +21,12 @@ SmartScanner uses native OCR solutions optimized for each platform:
 
 ```
 SmartScanner/
-├── android/app/src/main/java/com/smartscanner/
-│   ├── OcrModule.java       # Android Bridge (ML Kit)
-│   └── OcrPackage.java      # Android Package
+├── android/app/src/main/java/com/lioneldg/smartscannerapp/
+│   ├── NativeOcrModule.java    # Android TurboModule (ML Kit)
+│   └── NativeOcrPackage.java   # Android Package
 ├── ios/
-│   ├── VisionOcrModule.h    # iOS Header (Vision framework)
-│   └── VisionOcrModule.m    # iOS Bridge (Vision framework)
+│   ├── RCTNativeOcr.h          # iOS Header (Vision framework)
+│   └── RCTNativeOcr.mm         # iOS TurboModule (Vision framework)
 └── src/services/
     └── AdaptiveOcrService.ts # Adaptive OCR Service
 ```
@@ -84,27 +84,27 @@ cd ios && pod install && cd ..
 
 #### Android - Automatic Configuration
 
-The Android module is automatically registered via `OcrPackage.java` in `MainApplication.kt`.
+The Android module is automatically registered via `NativeOcrPackage.java` in `MainApplication.kt`.
 
 #### iOS - Automatic Configuration
 
-The iOS module is automatically registered via `VisionOcrModule.h` and `VisionOcrModule.m`.
+The iOS module is automatically registered via `RCTNativeOcr.h` and `RCTNativeOcr.mm`.
 
 ## Usage
 
 ### Adaptive OCR Service
 
 ```typescript
-import { adaptiveOcrService } from '../services/AdaptiveOcrService';
+import { adaptiveOcrService } from "../services/AdaptiveOcrService";
 
 // Initialize OCR
-await adaptiveOcrService.initialize({ language: 'eng' });
+await adaptiveOcrService.initialize({ language: "eng" });
 
 // Extract text from image
 const result = await adaptiveOcrService.extractTextFromUri(imageUri);
 
-console.log('Text:', result.text);
-console.log('Confidence:', result.confidence);
+console.log("Text:", result.text);
+console.log("Confidence:", result.confidence);
 
 // Platform information
 const info = adaptiveOcrService.getPlatformInfo();
@@ -114,7 +114,7 @@ console.log(`${info.engine} on ${info.platform}`);
 ### Camera Service
 
 ```typescript
-import { cameraService } from '../services/CameraService';
+import { cameraService } from "../services/CameraService";
 
 // Capture image with source selection
 const image = await cameraService.showSourceSelection();
@@ -126,7 +126,7 @@ const cameraImage = await cameraService.captureFromCamera();
 ### Zustand Store
 
 ```typescript
-import { useScanStore } from '../store';
+import { useScanStore } from "../store";
 
 const { addScanResult, scanHistory, getStatistics } = useScanStore();
 
@@ -227,7 +227,7 @@ interface ScanResult {
   processing_time_ms: number;
   timestamp: number;
   imageUri?: string;
-  type: 'text' | 'url' | 'email' | 'phone' | 'unknown';
+  type: "text" | "url" | "email" | "phone" | "unknown";
 }
 
 interface OcrSettings {
@@ -244,33 +244,33 @@ interface ImageData {
 }
 
 type OcrLanguage =
-  | 'eng' // English
-  | 'fra' // French
-  | 'deu' // German
-  | 'spa' // Spanish
-  | 'ita' // Italian
-  | 'por' // Portuguese
-  | 'rus' // Russian
-  | 'chi_sim' // Chinese Simplified
-  | 'chi_tra' // Chinese Traditional
-  | 'jpn' // Japanese
-  | 'kor'; // Korean
+  | "eng" // English
+  | "fra" // French
+  | "deu" // German
+  | "spa" // Spanish
+  | "ita" // Italian
+  | "por" // Portuguese
+  | "rus" // Russian
+  | "chi_sim" // Chinese Simplified
+  | "chi_tra" // Chinese Traditional
+  | "jpn" // Japanese
+  | "kor"; // Korean
 ```
 
 ## Technical Details
 
 ### Android - ML Kit Implementation
 
-- **Module**: `OcrModule.java`
-- **Package**: `OcrPackage.java`
+- **Module**: `NativeOcrModule.java`
+- **Package**: `NativeOcrPackage.java`
 - **Dependency**: `com.google.mlkit:text-recognition:16.0.1`
 - **Confidence**: Calculated via heuristic based on text quality
 - **Performance**: Asynchronous processing with callbacks
 
 ### iOS - Vision Framework Implementation
 
-- **Module**: `VisionOcrModule.m`
-- **Header**: `VisionOcrModule.h`
+- **Module**: `RCTNativeOcr.mm`
+- **Header**: `RCTNativeOcr.h`
 - **Framework**: Vision (iOS 13+)
 - **Confidence**: Native confidence score from Vision framework
 - **Performance**: Asynchronous processing with dispatch queues

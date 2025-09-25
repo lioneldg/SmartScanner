@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OcrPackage implements ReactPackage {
+public class NativeOcrPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Collections.emptyList();
@@ -18,8 +18,8 @@ public class OcrPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new OcrModule(reactContext));
-        android.util.Log.d("OcrPackage", "createNativeModules called - Added OcrModule");
+        modules.add(new NativeOcrModule(reactContext));
+        android.util.Log.d("NativeOcrPackage", "createNativeModules called - Added NativeOcrModule");
         return modules;
     }
 }

@@ -1,16 +1,15 @@
 package com.lioneldg.smartscannerapp;
 
-import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
-import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Promise;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.bridge.Arguments;
-
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.WritableMap;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,25 +24,17 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-
-public class OcrModule extends ReactContextBaseJavaModule {
-    private static final String TAG = "OcrModule";
+public class NativeOcrModule extends NativeOcrSpec {
+    private static final String TAG = "NativeOcrModule";
     private boolean isInitialized = false;
     private TextRecognizer textRecognizer;
 
-    public OcrModule(ReactApplicationContext reactContext) {
+    public NativeOcrModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        Log.d(TAG, "OcrModule constructor called - Module created successfully");
+        Log.d(TAG, "NativeOcrModule constructor called - Module created successfully");
     }
 
     @Override
-    public String getName() {
-        Log.d(TAG, "getName() called - returning 'OcrModule'");
-        return "OcrModule";
-    }
-
-    @ReactMethod
     public void initialize(String language, Promise promise) {
         try {
             // Initialize ML Kit Text Recognition
@@ -65,7 +56,7 @@ public class OcrModule extends ReactContextBaseJavaModule {
         }
     }
 
-    @ReactMethod
+    @Override
     public void extractTextFromImage(ReadableArray imageDataArray, Promise promise) {
         if (!isInitialized) {
             WritableMap error = Arguments.createMap();

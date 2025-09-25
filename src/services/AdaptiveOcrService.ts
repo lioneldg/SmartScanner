@@ -1,8 +1,8 @@
-import { NativeModules, Platform } from "react-native";
+import { Platform } from "react-native";
+import NativeOcr from "../specs/NativeOcr";
 import { decode } from "base-64";
 import {
   OcrResult,
-  OcrModuleResponse,
   OcrConfiguration,
   ImageData,
   ScanResult,
@@ -10,39 +10,17 @@ import {
   OcrSettings,
 } from "../types/ocr";
 
-interface OcrModuleInterface {
-  initialize(language: string): Promise<OcrModuleResponse>;
-  extractTextFromImage(imageData: number[]): Promise<OcrModuleResponse>;
-}
-
-// Get the appropriate OCR module based on platform
-const getOcrModule = (): OcrModuleInterface => {
+// Use the TurboModule for both platforms
+const getOcrModule = () => {
   console.log("getOcrModule: Platform is", Platform.OS);
-  console.log(
-    "getOcrModule: Available NativeModules:",
-    Object.keys(NativeModules)
-  );
-
-  if (Platform.OS === "ios") {
-    // Use Vision framework on iOS
-    const { VisionOcrModule } = NativeModules;
-    console.log(
-      "getOcrModule: VisionOcrModule:",
-      VisionOcrModule ? "Found" : "NULL"
-    );
-    return VisionOcrModule;
-  } else {
-    // Use ML Kit on Android
-    const { OcrModule } = NativeModules;
-    console.log("getOcrModule: OcrModule:", OcrModule ? "Found" : "NULL");
-    return OcrModule;
-  }
+  console.log("getOcrModule: Using TurboModule NativeOcr");
+  return NativeOcr;
 };
 
 export class AdaptiveOcrService {
   private isInitialized: boolean = false;
   private currentLanguage: OcrLanguage = "eng";
-  private ocrModule: OcrModuleInterface;
+  private ocrModule: typeof NativeOcr;
   private settings: OcrSettings = {
     language: "eng",
     autoDetectTextType: true,
@@ -109,7 +87,7 @@ export class AdaptiveOcrService {
       const response = await this.ocrModule.extractTextFromImage(bytes);
 
       if (!response.success || !response.result) {
-        throw new Error(response.message || "Text extraction failed");
+        throw new Error("Text extraction failed");
       }
 
       const ocrResult: OcrResult = JSON.parse(response.result);
