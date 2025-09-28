@@ -41,7 +41,8 @@
     "deleteFailed": "Delete Failed",
     "deleteFailedMessage": "Failed to delete scan. Please try again.",
     "emptyText": "Empty Text",
-    "emptyTextMessage": "Text cannot be empty. Please enter some text before saving."
+    "emptyTextMessage": "Text cannot be empty. Please enter some text before saving.",
+    "scanNotFound": "Scan not found"
   },
   "success": {
     "textExtracted": "Text Extracted Successfully",
@@ -84,5 +85,9 @@
     "title": "Edit Text",
     "placeholder": "Type or modify the text here...",
     "reset": "Reset"
+  },
+  "viewScan": {
+    "title": "View Scan",
+    "confidence": "confidence"
   }
 }

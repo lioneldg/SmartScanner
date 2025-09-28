@@ -41,7 +41,8 @@
     "deleteFailed": "Erreur de suppression",
     "deleteFailedMessage": "Impossible de supprimer le scan. Veuillez réessayer.",
     "emptyText": "Texte vide",
-    "emptyTextMessage": "Le texte ne peut pas être vide. Veuillez saisir du texte avant de sauvegarder."
+    "emptyTextMessage": "Le texte ne peut pas être vide. Veuillez saisir du texte avant de sauvegarder.",
+    "scanNotFound": "Scan introuvable"
   },
   "success": {
     "textExtracted": "Texte extrait avec succès",
@@ -84,5 +85,9 @@
     "title": "Éditer le texte",
     "placeholder": "Tapez ou modifiez le texte ici...",
     "reset": "Réinitialiser"
+  },
+  "viewScan": {
+    "title": "Voir le scan",
+    "confidence": "confiance"
   }
 }

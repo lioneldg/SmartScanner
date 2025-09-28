@@ -8,6 +8,15 @@ export type RootStackParamList = {
     imageUri?: string;
     confidence?: number;
   };
+  ViewScan: {
+    scan: {
+      id: string;
+      text: string;
+      confidence: number;
+      timestamp: number;
+      imageUri?: string;
+    };
+  };
 };
 
 declare global {

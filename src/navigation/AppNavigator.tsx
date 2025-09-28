@@ -9,6 +9,7 @@ import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ScansScreen from "../screens/ScansScreen";
 import TextEditScreen from "../screens/TextEditScreen";
+import ViewScanScreen from "../screens/ViewScanScreen";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -96,6 +97,13 @@ const AppNavigator: React.FC = () => {
         component={TextEditScreen}
         options={{
           title: t("textEdit.title"),
+        }}
+      />
+      <Stack.Screen
+        name="ViewScan"
+        component={ViewScanScreen}
+        options={{
+          title: t("viewScan.title"),
         }}
       />
     </Stack.Navigator>

@@ -20,7 +20,7 @@ import { Theme } from "../types/theme";
 
 type ScansScreenProps = NativeStackScreenProps<RootStackParamList, "Scans">;
 
-const ScansScreen: React.FC<ScansScreenProps> = () => {
+const ScansScreen: React.FC<ScansScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useAppStore();
   const { scanHistory, deleteScanItem, getStatistics } = useScanStore();
@@ -38,6 +38,18 @@ const ScansScreen: React.FC<ScansScreenProps> = () => {
 
   const handleCopyPress = (scan: ScanResult) => {
     handleCopyToClipboard(scan.text);
+  };
+
+  const handleScanPress = (scan: ScanResult) => {
+    navigation.navigate("ViewScan", {
+      scan: {
+        id: scan.id,
+        text: scan.text,
+        confidence: scan.confidence,
+        timestamp: scan.timestamp,
+        imageUri: scan.imageUri,
+      },
+    });
   };
 
   const handleLongPress = (scan: ScanResult) => {
@@ -79,6 +91,7 @@ const ScansScreen: React.FC<ScansScreenProps> = () => {
         <>
           <TouchableOpacity
             style={styles.scanItemContent}
+            onPress={() => handleScanPress(item)}
             onLongPress={() => handleLongPress(item)}
             disabled={isDeleting === item.id}
           >
@@ -90,7 +103,7 @@ const ScansScreen: React.FC<ScansScreenProps> = () => {
                 {Math.round(item.confidence)}%
               </Text>
               <Text style={styles.scanMetaText}>
-                {DateFormatService.formatScanDate(item.timestamp)}
+                {DateFormatService.formatDate(item.timestamp)}
               </Text>
             </View>
           </TouchableOpacity>

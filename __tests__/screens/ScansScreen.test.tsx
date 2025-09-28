@@ -20,7 +20,7 @@ jest.mock("../../src/store", () => ({
 jest.mock("../../src/services/DateFormatService", () => ({
   __esModule: true,
   default: {
-    formatScanDate: jest.fn(),
+    formatDate: jest.fn(),
   },
 }));
 
@@ -194,7 +194,9 @@ describe("ScansScreen", () => {
 
     mockUseAppStore.mockReturnValue(defaultAppStoreState);
     mockUseScanStore.mockReturnValue(defaultScanStoreState);
-    mockDateFormatService.formatScanDate.mockReturnValue("01/01/2022, 00:00");
+    (DateFormatService.formatDate as jest.Mock).mockReturnValue(
+      "01/01/2022, 00:00"
+    );
   });
 
   it("should render correctly with empty state", () => {
@@ -284,6 +286,95 @@ describe("ScansScreen", () => {
     fireEvent.press(copyButton);
 
     // Copy functionality should work
+  });
+
+  it("should navigate to ViewScanScreen when scan item is pressed", () => {
+    mockUseScanStore.mockReturnValue({
+      ...defaultScanStoreState,
+      scanHistory: [mockScanResults[0]],
+    });
+
+    const { getByText } = render(
+      <ScansScreen
+        navigation={mockNavigation as any}
+        route={mockRoute as any}
+      />
+    );
+
+    // Click on the scan text content (which is inside the TouchableOpacity)
+    const scanText = getByText("First scan result");
+    fireEvent.press(scanText);
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("ViewScan", {
+      scan: {
+        id: "scan1",
+        text: "First scan result",
+        confidence: 95,
+        timestamp: 1640995200000,
+        imageUri: undefined,
+      },
+    });
+  });
+
+  it("should navigate to ViewScanScreen with correct scan data", () => {
+    mockUseScanStore.mockReturnValue({
+      ...defaultScanStoreState,
+      scanHistory: [mockScanResults[1]], // Second scan with different data
+    });
+
+    const { getByText } = render(
+      <ScansScreen
+        navigation={mockNavigation as any}
+        route={mockRoute as any}
+      />
+    );
+
+    // Click on the scan text content (which is inside the TouchableOpacity)
+    const scanText = getByText("Second scan result with longer text content");
+    fireEvent.press(scanText);
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("ViewScan", {
+      scan: {
+        id: "scan2",
+        text: "Second scan result with longer text content",
+        confidence: 87,
+        timestamp: 1641081600000,
+        imageUri: undefined,
+      },
+    });
+  });
+
+  it("should handle scan press with scan without imageUri", () => {
+    const scanWithoutImage = {
+      ...mockScanResults[0],
+      imageUri: undefined,
+    };
+
+    mockUseScanStore.mockReturnValue({
+      ...defaultScanStoreState,
+      scanHistory: [scanWithoutImage],
+    });
+
+    const { getByText } = render(
+      <ScansScreen
+        navigation={mockNavigation as any}
+        route={mockRoute as any}
+      />
+    );
+
+    // Click on the scan text content (which is inside the TouchableOpacity)
+    const scanText = getByText("First scan result");
+    fireEvent.press(scanText);
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("ViewScan", {
+      scan: {
+        id: "scan1",
+        text: "First scan result",
+        confidence: 95,
+        timestamp: 1640995200000,
+        imageUri: undefined,
+      },
+    });
   });
 
   it("should show delete confirmation on long press", () => {
@@ -439,9 +530,7 @@ describe("ScansScreen", () => {
       />
     );
 
-    expect(mockDateFormatService.formatScanDate).toHaveBeenCalledWith(
-      1640995200000
-    );
+    expect(DateFormatService.formatDate).toHaveBeenCalledWith(1640995200000);
   });
 
   it("should display confidence percentage correctly", () => {
