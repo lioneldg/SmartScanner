@@ -1,4 +1,1 @@
-yarn test --coverage
-yarn lint
-yarn tsc
-yarn knip
+yarn check-all
