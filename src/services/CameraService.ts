@@ -13,9 +13,22 @@ interface ImageCropPickerOptions {
   includeBase64?: boolean;
   cropping?: boolean;
   freeStyleCropEnabled?: boolean;
+
+  // Android theme options
   cropperActiveWidgetColor?: string;
-  cropperStatusBarColor?: string;
+  cropperStatusBarLight?: boolean;
+  cropperNavigationBarLight?: boolean;
   cropperToolbarColor?: string;
+  cropperToolbarWidgetColor?: string;
+
+  // iOS theme options
+  cropperChooseColor?: string;
+  cropperCancelColor?: string;
+  cropperChooseText?: string;
+  cropperCancelText?: string;
+  cropperRotateButtonsHidden?: boolean;
+
+  // Common options
   hideBottomControls?: boolean;
   enableRotationGesture?: boolean;
 }
@@ -55,17 +68,44 @@ function isImageResult(result: unknown): result is ImageResult {
 }
 
 class CameraService {
-  private getDefaultOptions(theme: Theme): ImageCropPickerOptions {
+  private getDefaultOptions(
+    theme: Theme,
+    t?: (key: string) => string
+  ): ImageCropPickerOptions {
+    const isDarkTheme =
+      theme.colors.background === "#000000" ||
+      theme.colors.background === "#1C1C1E";
+
     return {
+      // Basic options
       width: 1920,
       height: 1920,
       compressImageQuality: 0.8,
       includeBase64: false,
       cropping: true,
       freeStyleCropEnabled: true,
+
+      // Android theme options
       cropperActiveWidgetColor: theme.colors.primary,
-      cropperStatusBarColor: theme.colors.surface,
-      cropperToolbarColor: theme.colors.surface,
+      cropperStatusBarLight: !isDarkTheme, // true for light status bar (dark icons), false for dark status bar (light icons)
+      cropperNavigationBarLight: !isDarkTheme, // true for light navigation bar (dark icons), false for dark navigation bar (light icons)
+      cropperToolbarColor: isDarkTheme
+        ? theme.colors.surface
+        : theme.colors.background,
+      cropperToolbarWidgetColor: isDarkTheme
+        ? theme.colors.text
+        : theme.colors.text,
+
+      // iOS theme options
+      cropperChooseColor: theme.colors.primary,
+      cropperCancelColor: isDarkTheme
+        ? theme.colors.textSecondary
+        : theme.colors.textTertiary,
+      cropperChooseText: t ? t("camera.choose") : "Choose",
+      cropperCancelText: t ? t("common.cancel") : "Cancel",
+      cropperRotateButtonsHidden: false,
+
+      // Common options
       hideBottomControls: false,
       enableRotationGesture: true,
     };
@@ -73,9 +113,10 @@ class CameraService {
 
   private mapCaptureOptionsToPickerOptions(
     options: CaptureOptions,
-    theme: Theme
+    theme: Theme,
+    t?: (key: string) => string
   ): ImageCropPickerOptions {
-    const defaultOptions = this.getDefaultOptions(theme);
+    const defaultOptions = this.getDefaultOptions(theme, t);
 
     return {
       ...defaultOptions,
@@ -98,12 +139,12 @@ class CameraService {
       ...(options.enableRotationGesture !== undefined && {
         enableRotationGesture: options.enableRotationGesture,
       }),
-      // Map cropper colors
+      // Map cropper colors (these will override theme colors if provided)
       ...(options.cropperActiveWidgetColor && {
         cropperActiveWidgetColor: options.cropperActiveWidgetColor,
       }),
       ...(options.cropperStatusBarColor && {
-        cropperStatusBarColor: options.cropperStatusBarColor,
+        cropperToolbarColor: options.cropperStatusBarColor,
       }),
       ...(options.cropperToolbarColor && {
         cropperToolbarColor: options.cropperToolbarColor,
@@ -217,7 +258,8 @@ class CameraService {
 
       const pickerOptions = this.mapCaptureOptionsToPickerOptions(
         options || {},
-        theme
+        theme,
+        t
       );
 
       const image = await ImagePicker.openCamera(pickerOptions);
@@ -288,7 +330,8 @@ class CameraService {
 
       const pickerOptions = this.mapCaptureOptionsToPickerOptions(
         options || {},
-        theme
+        theme,
+        t
       );
 
       const image = await ImagePicker.openPicker(pickerOptions);
