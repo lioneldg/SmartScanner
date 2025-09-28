@@ -10,7 +10,8 @@
     "start": "react-native start",
     "test": "jest",
     "prepare": "husky",
-    "check-all": "yarn lint && yarn tsc && yarn knip && yarn test --coverage"
+    "check-all": "yarn lint && yarn tsc && yarn knip && yarn check-french && yarn test --coverage",
+    "check-french": "if grep -ri '[àâäéèêëïîôöùûüÿç]' src/ __tests__/ --exclude-dir='locales' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' --include='*.md' --include='*.txt'; then echo '❌ French text found in code!' && exit 1; else echo '✅ No French text found in code'; fi"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
