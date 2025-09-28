@@ -11,7 +11,6 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTranslation } from "react-i18next";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
-import Clipboard from "@react-native-clipboard/clipboard";
 import { useAppStore, useScanStore } from "../store";
 import { RootStackParamList } from "../navigation/types";
 import { adaptiveOcrService } from "../services/AdaptiveOcrService";
@@ -23,8 +22,7 @@ type HomeScreenProps = NativeStackScreenProps<RootStackParamList, "Home">;
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useAppStore();
-  const { addScanResult, isScanning, setScanning, ocrSettings, scanHistory } =
-    useScanStore();
+  const { isScanning, setScanning, ocrSettings, scanHistory } = useScanStore();
 
   const [isInitializing, setIsInitializing] = useState(false);
   const [ocrReady, setOcrReady] = useState(false);
@@ -107,21 +105,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         uri: captureResult.uri,
       });
 
-      // Only add to history and copy if text was detected
+      // Only proceed if text was detected
       if (scanResult.text.trim()) {
-        // Add to scan history
-        addScanResult(scanResult);
-
-        // Copy to clipboard automatically
-        Clipboard.setString(scanResult.text);
-        Alert.alert(
-          t("success.textExtracted"),
-          scanResult.text.substring(0, 200) +
-            (scanResult.text.length > 200 ? "..." : "") +
-            "\n\n" +
-            t("success.copiedToClipboard"),
-          [{ text: t("common.ok") }]
-        );
+        // Navigate to text edit screen instead of showing alert
+        navigation.navigate("TextEdit", {
+          extractedText: scanResult.text,
+          imageUri: scanResult.imageUri,
+          confidence: scanResult.confidence,
+        });
       } else {
         Alert.alert(t("warning.noText"), t("warning.noTextMessage"), [
           { text: t("common.ok") },

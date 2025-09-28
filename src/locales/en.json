@@ -39,13 +39,17 @@
     "scanFailed": "Scan Failed",
     "scanFailedMessage": "Failed to extract text from image.",
     "deleteFailed": "Delete Failed",
-    "deleteFailedMessage": "Failed to delete scan. Please try again."
+    "deleteFailedMessage": "Failed to delete scan. Please try again.",
+    "emptyText": "Empty Text",
+    "emptyTextMessage": "Text cannot be empty. Please enter some text before saving."
   },
   "success": {
     "textExtracted": "Text Extracted Successfully",
     "copied": "Copied",
     "copiedMessage": "Text has been copied to clipboard",
-    "copiedToClipboard": "Text copied to clipboard"
+    "copiedToClipboard": "Text copied to clipboard",
+    "textSaved": "Text Saved",
+    "textSavedMessage": "Text has been saved and copied to clipboard"
   },
   "warning": {
     "noText": "No Text Detected",
@@ -75,5 +79,10 @@
     "photoLibraryDenied": "Photo library permission denied",
     "noImageCaptured": "No image captured",
     "noImageSelected": "No image selected"
+  },
+  "textEdit": {
+    "title": "Edit Text",
+    "placeholder": "Type or modify the text here...",
+    "reset": "Reset"
   }
 }

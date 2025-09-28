@@ -13,6 +13,8 @@ const zustand = require('./zustand');
 const stores = require('./stores');
 const services = require('./services');
 const base64 = require('./base64');
+const TextEditScreen = require('./TextEditScreen');
+const TextEditScreenStores = require('./TextEditScreenStores');
 
 // Export individual mocks for easier access
 module.exports = {
@@ -30,6 +32,8 @@ module.exports = {
   stores,
   services,
   base64,
+  TextEditScreen,
+  TextEditScreenStores,
 };
 
 // Also export as default for ES6 imports

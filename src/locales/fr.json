@@ -39,13 +39,17 @@
     "scanFailed": "Échec du scan",
     "scanFailedMessage": "Impossible d'extraire le texte de l'image.",
     "deleteFailed": "Erreur de suppression",
-    "deleteFailedMessage": "Impossible de supprimer le scan. Veuillez réessayer."
+    "deleteFailedMessage": "Impossible de supprimer le scan. Veuillez réessayer.",
+    "emptyText": "Texte vide",
+    "emptyTextMessage": "Le texte ne peut pas être vide. Veuillez saisir du texte avant de sauvegarder."
   },
   "success": {
     "textExtracted": "Texte extrait avec succès",
     "copied": "Copié",
     "copiedMessage": "Le texte a été copié dans le presse-papier",
-    "copiedToClipboard": "Texte copié dans le presse-papier"
+    "copiedToClipboard": "Texte copié dans le presse-papier",
+    "textSaved": "Texte sauvegardé",
+    "textSavedMessage": "Le texte a été sauvegardé et copié dans le presse-papier"
   },
   "warning": {
     "noText": "Aucun texte détecté",
@@ -75,5 +79,10 @@
     "photoLibraryDenied": "Permission de galerie photo refusée",
     "noImageCaptured": "Aucune image capturée",
     "noImageSelected": "Aucune image sélectionnée"
+  },
+  "textEdit": {
+    "title": "Éditer le texte",
+    "placeholder": "Tapez ou modifiez le texte ici...",
+    "reset": "Réinitialiser"
   }
 }

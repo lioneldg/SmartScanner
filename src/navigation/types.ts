@@ -3,6 +3,11 @@ export type RootStackParamList = {
   Home: undefined;
   Settings: undefined;
   Scans: undefined;
+  TextEdit: {
+    extractedText: string;
+    imageUri?: string;
+    confidence?: number;
+  };
 };
 
 declare global {

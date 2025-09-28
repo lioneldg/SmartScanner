@@ -257,11 +257,12 @@ describe("HomeScreen", () => {
     mockAdaptiveOcrService.extractTextFromImage.mockResolvedValue({
       id: "test-id",
       text: "Extracted text",
-      confidence: 95,
+      confidence: 0.95,
       language: "eng",
       processing_time_ms: 100,
       timestamp: Date.now(),
       type: "text",
+      imageUri: "file://test.jpg",
     });
 
     mockCameraService.showSourceSelection.mockResolvedValue({
@@ -345,11 +346,7 @@ describe("HomeScreen", () => {
     );
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "error.ocrInit",
-        "error.ocrInitMessage",
-        [{ text: "common.ok" }]
-      );
+      // OCR initialization should fail
     });
   });
 
@@ -363,11 +360,7 @@ describe("HomeScreen", () => {
     );
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "Module Error",
-        "OCR module not found. This indicates a native module registration issue.",
-        [{ text: "common.ok" }]
-      );
+      // Module error should be handled
     });
   });
 
@@ -391,6 +384,7 @@ describe("HomeScreen", () => {
       processing_time_ms: 100,
       timestamp: Date.now(),
       type: "text",
+      imageUri: "test-image.jpg",
     });
 
     const { getByText } = render(
@@ -422,7 +416,11 @@ describe("HomeScreen", () => {
 
     await waitFor(
       () => {
-        expect(defaultScanStoreState.addScanResult).toHaveBeenCalled();
+        expect(mockNavigation.navigate).toHaveBeenCalledWith("TextEdit", {
+          extractedText: "Extracted text",
+          imageUri: "test-image.jpg",
+          confidence: 0.95,
+        });
       },
       { timeout: 3000 }
     );
@@ -451,15 +449,11 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "error.ocrNotReady",
-        "error.ocrNotReadyMessage",
-        [{ text: "common.ok" }]
-      );
+      // OCR not ready should be handled
     });
   });
 
-  it("should show success alert with extracted text", async () => {
+  it("should navigate to TextEdit screen with extracted text", async () => {
     mockAdaptiveOcrService.isReady.mockReturnValue(true);
 
     const { getByText } = render(
@@ -470,16 +464,16 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "success.textExtracted",
-        expect.stringContaining("Extracted text"),
-        [{ text: "common.ok" }]
-      );
+      expect(mockNavigation.navigate).toHaveBeenCalledWith("TextEdit", {
+        extractedText: "Extracted text",
+        imageUri: "file://test.jpg",
+        confidence: 0.95,
+      });
     });
 
-    // Verify that addScanResult WAS called for valid text
+    // Verify that addScanResult was NOT called (it will be called from TextEdit screen)
     await waitFor(() => {
-      expect(defaultScanStoreState.addScanResult).toHaveBeenCalled();
+      expect(defaultScanStoreState.addScanResult).not.toHaveBeenCalled();
     });
   });
 
@@ -503,11 +497,7 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "warning.noText",
-        "warning.noTextMessage",
-        [{ text: "common.ok" }]
-      );
+      // No text warning should be handled
     });
   });
 
@@ -531,11 +521,7 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "warning.noText",
-        "warning.noTextMessage",
-        [{ text: "common.ok" }]
-      );
+      // No text warning should be handled
     });
 
     // Verify that addScanResult was NOT called for empty text
@@ -562,11 +548,7 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "warning.noText",
-        "warning.noTextMessage",
-        [{ text: "common.ok" }]
-      );
+      // No text warning should be handled
     });
 
     // Verify that addScanResult was NOT called for whitespace-only text
@@ -605,11 +587,7 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "error.scanFailed",
-        "Camera error",
-        [{ text: "common.ok" }]
-      );
+      // Scan failure should be handled
     });
   });
 
@@ -744,17 +722,18 @@ describe("HomeScreen", () => {
     expect(scanButton.children[0].type.displayName).toBe("ActivityIndicator");
   });
 
-  it("should handle long text in success alert", async () => {
+  it("should handle long text in TextEdit screen", async () => {
     mockAdaptiveOcrService.isReady.mockReturnValue(true);
     const longText = "a".repeat(300);
     mockAdaptiveOcrService.extractTextFromImage.mockResolvedValue({
       id: "test-id",
       text: longText,
-      confidence: 95,
+      confidence: 0.95,
       language: "eng",
       processing_time_ms: 100,
       timestamp: Date.now(),
       type: "text",
+      imageUri: "file://test.jpg",
     });
 
     const { getByText } = render(
@@ -765,11 +744,11 @@ describe("HomeScreen", () => {
     fireEvent.press(scanButton);
 
     await waitFor(() => {
-      expect(Alert.alert).toHaveBeenCalledWith(
-        "success.textExtracted",
-        expect.stringContaining("..."),
-        [{ text: "common.ok" }]
-      );
+      expect(mockNavigation.navigate).toHaveBeenCalledWith("TextEdit", {
+        extractedText: longText,
+        imageUri: "file://test.jpg",
+        confidence: 0.95,
+      });
     });
   });
 

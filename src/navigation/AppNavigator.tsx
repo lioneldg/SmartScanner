@@ -8,6 +8,7 @@ import { useAppStore, useScanStore } from "../store";
 import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import ScansScreen from "../screens/ScansScreen";
+import TextEditScreen from "../screens/TextEditScreen";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -88,6 +89,13 @@ const AppNavigator: React.FC = () => {
         options={{
           title: t("navigation.scans"),
           headerRight: () => renderClearButton(),
+        }}
+      />
+      <Stack.Screen
+        name="TextEdit"
+        component={TextEditScreen}
+        options={{
+          title: t("textEdit.title"),
         }}
       />
     </Stack.Navigator>
