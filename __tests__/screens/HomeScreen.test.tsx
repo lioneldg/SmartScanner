@@ -290,7 +290,6 @@ describe("HomeScreen", () => {
       <HomeScreen navigation={mockNavigation as any} route={mockRoute as any} />
     );
 
-    expect(getByText("home.title")).toBeTruthy();
     expect(getByText("home.welcome")).toBeTruthy();
     expect(getByText("home.description")).toBeTruthy();
   });

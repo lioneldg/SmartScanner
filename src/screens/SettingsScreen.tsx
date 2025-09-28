@@ -145,8 +145,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t("settings.title")}</Text>
-
       {/* Language Selection */}
       <View style={styles.settingSection}>
         <Text style={styles.sectionTitle}>{t("settings.language")}</Text>
@@ -245,22 +243,11 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "center",
+      justifyContent: "flex-start",
       alignItems: "center",
       padding: theme.spacing.lg,
+      paddingTop: theme.spacing.xxl,
       backgroundColor: theme.colors.background,
-    },
-    title: {
-      fontSize: theme.typography.sizes.xxl,
-      fontWeight: theme.typography.weights.bold,
-      marginBottom: theme.spacing.lg,
-      color: theme.colors.text,
-    },
-    info: {
-      fontSize: theme.typography.sizes.md,
-      color: theme.colors.textSecondary,
-      marginBottom: theme.spacing.xxl,
-      textAlign: "center",
     },
     settingSection: {
       width: "100%",
@@ -290,20 +277,6 @@ const createStyles = (theme: Theme) =>
       fontSize: theme.typography.sizes.lg,
       color: theme.colors.textSecondary,
       fontWeight: theme.typography.weights.bold,
-    },
-    button: {
-      backgroundColor: theme.colors.primary,
-      paddingHorizontal: theme.spacing.xl,
-      paddingVertical: theme.spacing.md,
-      borderRadius: theme.borderRadius.md,
-      marginVertical: theme.spacing.sm,
-      minWidth: 200,
-    },
-    buttonText: {
-      color: theme.colors.background,
-      fontSize: theme.typography.sizes.md,
-      fontWeight: theme.typography.weights.semibold,
-      textAlign: "center",
     },
     // Modal styles
     modalOverlay: {

@@ -187,53 +187,61 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       style={styles.scrollView}
       contentContainerStyle={styles.container}
     >
-      <Text style={styles.title}>{t("home.title")}</Text>
-      <Text style={styles.subtitle}>{t("home.welcome")}</Text>
-      <Text style={styles.description}>{t("home.description")}</Text>
+      {/* Welcome section */}
+      <View style={styles.welcomeSection}>
+        <Text style={styles.subtitle}>{t("home.welcome")}</Text>
+        <Text style={styles.description}>{t("home.description")}</Text>
+      </View>
 
       {/* Main scan button */}
-      <TouchableOpacity
-        style={[
-          styles.scanButton,
-          (!ocrReady || isScanning) && styles.scanButtonDisabled,
-        ]}
-        onPress={handleScanPress}
-        disabled={!ocrReady || isScanning}
-        testID="scan-button"
-      >
-        {isScanning ? (
-          <ActivityIndicator size="small" color={theme.colors.buttonText} />
-        ) : (
-          <>
-            <Ionicons
-              name="scan"
-              size={24}
-              color={theme.colors.buttonText}
-              style={styles.buttonIcon}
-            />
-            <Text style={styles.scanButtonText}>{t("home.startScanning")}</Text>
-          </>
-        )}
-      </TouchableOpacity>
-
-      {/* Scans button */}
-      {renderScansButton()}
-
-      {/* OCR Status */}
-      <View style={styles.statusContainer}>
-        <Ionicons
-          name={ocrReady ? "checkmark-circle" : "alert-circle"}
-          size={16}
-          color={ocrReady ? theme.colors.success : theme.colors.warning}
-        />
-        <Text
+      <View style={styles.scanSection}>
+        <TouchableOpacity
           style={[
-            styles.statusText,
-            { color: ocrReady ? theme.colors.success : theme.colors.warning },
+            styles.scanButton,
+            (!ocrReady || isScanning) && styles.scanButtonDisabled,
           ]}
+          onPress={handleScanPress}
+          disabled={!ocrReady || isScanning}
+          testID="scan-button"
         >
-          {ocrReady ? t("home.ocrReady") : t("home.ocrNotReady")}
-        </Text>
+          {isScanning ? (
+            <ActivityIndicator size="small" color={theme.colors.buttonText} />
+          ) : (
+            <>
+              <Ionicons
+                name="scan"
+                size={24}
+                color={theme.colors.buttonText}
+                style={styles.buttonIcon}
+              />
+              <Text style={styles.scanButtonText}>
+                {t("home.startScanning")}
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+      </View>
+
+      {/* Secondary actions */}
+      <View style={styles.secondaryActions}>
+        {renderScansButton()}
+
+        {/* OCR Status */}
+        <View style={styles.statusContainer}>
+          <Ionicons
+            name={ocrReady ? "checkmark-circle" : "alert-circle"}
+            size={16}
+            color={ocrReady ? theme.colors.success : theme.colors.warning}
+          />
+          <Text
+            style={[
+              styles.statusText,
+              { color: ocrReady ? theme.colors.success : theme.colors.warning },
+            ]}
+          >
+            {ocrReady ? t("home.ocrReady") : t("home.ocrNotReady")}
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );
@@ -251,6 +259,20 @@ const createStyles = (theme: Theme) =>
       justifyContent: "center",
       alignItems: "center",
       padding: theme.spacing.lg,
+      paddingTop: theme.spacing.xl,
+    },
+    welcomeSection: {
+      alignItems: "center",
+      marginBottom: theme.spacing.xxl,
+    },
+    scanSection: {
+      alignItems: "center",
+      marginBottom: theme.spacing.xl,
+    },
+    secondaryActions: {
+      width: "100%",
+      alignItems: "center",
+      gap: theme.spacing.lg,
     },
     loadingContainer: {
       flex: 1,
@@ -264,37 +286,31 @@ const createStyles = (theme: Theme) =>
       color: theme.colors.textSecondary,
       textAlign: "center",
     },
-    title: {
-      fontSize: theme.typography.sizes.xxl,
-      fontWeight: theme.typography.weights.bold,
-      marginBottom: theme.spacing.sm,
-      color: theme.colors.text,
-      textAlign: "center",
-    },
     subtitle: {
-      fontSize: theme.typography.sizes.lg,
-      color: theme.colors.textSecondary,
+      fontSize: theme.typography.sizes.xl,
+      color: theme.colors.text,
       marginBottom: theme.spacing.sm,
       textAlign: "center",
+      fontWeight: theme.typography.weights.semibold,
     },
     description: {
-      fontSize: theme.typography.sizes.sm,
-      color: theme.colors.textTertiary,
-      marginBottom: theme.spacing.xl,
+      fontSize: theme.typography.sizes.md,
+      color: theme.colors.textSecondary,
       textAlign: "center",
+      lineHeight: 22,
+      maxWidth: 300,
     },
     scanButton: {
       backgroundColor: theme.colors.primary,
       paddingHorizontal: theme.spacing.xxl,
       paddingVertical: theme.spacing.lg,
-      borderRadius: theme.borderRadius.lg,
-      marginBottom: theme.spacing.lg,
-      minWidth: 250,
-      elevation: 3,
-      shadowColor: theme.colors.text,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
+      borderRadius: theme.borderRadius.xl,
+      minWidth: 280,
+      elevation: 4,
+      shadowColor: theme.colors.primary,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
@@ -313,38 +329,22 @@ const createStyles = (theme: Theme) =>
     buttonIcon: {
       marginRight: theme.spacing.sm,
     },
-    quickActionsContainer: {
-      flexDirection: "row",
-      marginBottom: theme.spacing.xl,
-      gap: theme.spacing.md,
-    },
-    quickActionButton: {
-      backgroundColor: theme.colors.surface,
-      paddingHorizontal: theme.spacing.lg,
-      paddingVertical: theme.spacing.md,
-      borderRadius: theme.borderRadius.md,
-      flexDirection: "row",
-      alignItems: "center",
-      borderWidth: 1,
-      borderColor: theme.colors.primary,
-    },
-    quickActionText: {
-      color: theme.colors.primary,
-      fontSize: theme.typography.sizes.sm,
-      fontWeight: theme.typography.weights.medium,
-      marginLeft: theme.spacing.xs,
-    },
     scansButton: {
       backgroundColor: theme.colors.surface,
       padding: theme.spacing.lg,
       borderRadius: theme.borderRadius.lg,
-      marginBottom: theme.spacing.lg,
       width: "100%",
+      maxWidth: 300,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       borderWidth: 1,
       borderColor: theme.colors.border,
+      elevation: 2,
+      shadowColor: theme.colors.text,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
     },
     scansButtonText: {
       fontSize: theme.typography.sizes.md,
@@ -357,7 +357,12 @@ const createStyles = (theme: Theme) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      marginTop: theme.spacing.lg,
+      backgroundColor: theme.colors.surface,
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      borderRadius: theme.borderRadius.md,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
     },
     statusText: {
       fontSize: theme.typography.sizes.xs,
