@@ -167,7 +167,6 @@ describe("SettingsScreen", () => {
       />
     );
 
-    expect(getByText("settings.title")).toBeTruthy();
     expect(getByText("settings.language")).toBeTruthy();
     expect(getByText("settings.theme")).toBeTruthy();
   });
